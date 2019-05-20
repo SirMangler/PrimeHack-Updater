@@ -83,7 +83,7 @@ namespace PrimeHack_Updator
 
                 foreach (string file in files)
                 {
-                    File.Copy(file, docspath + file.Replace(".\\Profiles\\", ""));
+                    File.Copy(file, docspath + file.Replace(".\\Profiles\\", ""), true);
                 }
 
                 Directory.Delete(".\\Profiles\\", true);
