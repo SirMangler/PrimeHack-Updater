@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.329
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimeHack Updater", "PrimeHack Updater\PrimeHack Updater.csproj", "{BC203460-914A-46A0-90E3-97897438CE4E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BC203460-914A-46A0-90E3-97897438CE4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC203460-914A-46A0-90E3-97897438CE4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC203460-914A-46A0-90E3-97897438CE4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC203460-914A-46A0-90E3-97897438CE4E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0F6847B1-D077-4163-9778-E02DA2BF808A}
+	EndGlobalSection
+EndGlobal
