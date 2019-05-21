@@ -64,7 +64,7 @@ namespace PrimeHack_Updator
 
         public static void runPrimeHack()
         {
-            Process.Start("Dolphin.exe");
+            Process.Start(".\\Dolphin.exe");
 
             System.Environment.Exit(1);
         }
