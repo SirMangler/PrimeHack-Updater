@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using PrimeHack_Updater;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -10,24 +11,29 @@ namespace PrimeHack_Updator
 {
     class Updater
     {
+        static string sysversion = "1.0.2";
+
         static void Main(string[] args)
         {
             Console.WriteLine("Checking for latest updates.");
 
-            string html = getVersionJSON();
-            if (html == null || html.Length == 0)
+            string html = VersionCheck.getJSONInfo(@"https://api.github.com/repos/SirMangler/PrimeHack-Updater/releases/latest");
+            string remoteversion = VersionCheck.getVersion(html);
+
+            if (remoteversion.Equals(sysversion))
             {
-                Console.WriteLine("Press any key to launch.");
+                Console.WriteLine("PrimeHack Updater has an available update. It is highly recommended you update in order for PrimeHack Updater to support the latest features!");
+                Console.WriteLine("Update Link: https://github.com/SirMangler/PrimeHack-Updater/releases/");
+                Console.WriteLine("Press Any Key To Continue");
                 Console.ReadKey();
-                runPrimeHack();
             }
 
-            dynamic j = JObject.Parse(html);
+            html = VersionCheck.getJSONInfo(@"https://api.github.com/repos/shiiion/Ishiiruka/releases/latest");
+            remoteversion = VersionCheck.getVersion(html);
 
-            string version = (string)j.tag_name;
             string currentversion = getVersion().Replace("\r\n", "");
 
-            if (version.Equals(currentversion))
+            if (currentversion.Equals(currentversion))
             {
                 runPrimeHack();
             }
@@ -48,12 +54,13 @@ namespace PrimeHack_Updator
                 }
             }
 
+            dynamic j = JObject.Parse(html);
             JArray ja = j.assets;
             dynamic assets = ja[0];
             string url = assets.browser_download_url;
 
             downloadLatest(url);
-            System.IO.File.WriteAllLines(".\\version.txt", new string[] { version });
+            System.IO.File.WriteAllLines(".\\version.txt", new string[] { remoteversion });
 
             Console.WriteLine("Moving profiles into Documents.");
             cutProfiles();
@@ -128,6 +135,9 @@ namespace PrimeHack_Updator
 
                 if (File.Exists(completeFileName))
                 {
+                    if (completeFileName.EndsWith("hack_config.ini"))
+                        continue;
+
                     long ziptime = file.LastWriteTime.ToFileTime();
                     long oldtime = File.GetLastWriteTime(completeFileName).ToFileTime();
 
@@ -147,35 +157,6 @@ namespace PrimeHack_Updator
             File.Delete(Path.GetTempPath() + "\\PrimeHackRelease.zip");
         }
 
-        public static string getVersionJSON()
-        {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
-            | SecurityProtocolType.Tls11
-            | SecurityProtocolType.Tls12
-            | SecurityProtocolType.Ssl3;
 
-            string html = string.Empty;
-            string url = @"https://api.github.com/repos/shiiion/Ishiiruka/releases/latest";
-
-            try
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                request.AutomaticDecompression = DecompressionMethods.GZip;
-                request.UserAgent = "PrimeHackUpdater";
-
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                using (Stream stream = response.GetResponseStream())
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    html = reader.ReadToEnd();
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Failed to retrieve version info: " + e.Message);
-            }
-
-            return html;
-        }
     }
 }

@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="Updater.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VersionCheck.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
