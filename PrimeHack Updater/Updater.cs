@@ -83,8 +83,10 @@ namespace PrimeHack_Updator
 
                 foreach (string file in files)
                 {
+                    String newpath = docspath + file.Replace(".\\Profiles\\", "");
+
                     if (!File.Exists(file))
-                        File.Copy(file, docspath + file.Replace(".\\Profiles\\", ""), true);      
+                        File.Copy(file, newpath, true);      
                 }
 
                 Directory.Delete(".\\Profiles\\", true);
@@ -115,6 +117,7 @@ namespace PrimeHack_Updator
             Console.WriteLine("Extracting PrimeHackRelease.zip");
 
             ZipArchive archive = ZipFile.OpenRead(Path.GetTempPath() + "\\PrimeHackRelease.zip");
+
             foreach (ZipArchiveEntry file in archive.Entries)
             {
                 string completeFileName = Path.Combine(".\\", file.FullName);
@@ -123,8 +126,19 @@ namespace PrimeHack_Updator
                 if (!Directory.Exists(directory))
                     Directory.CreateDirectory(directory);
 
-                if (file.Name != "")
+                if (File.Exists(completeFileName))
+                {
+                    long ziptime = file.LastWriteTime.ToFileTime();
+                    long oldtime = File.GetLastWriteTime(completeFileName).ToFileTime();
+
+                    if (ziptime == oldtime)
+                        continue;                
+                }
+
+                if (file.Name != "") {
+                    Console.WriteLine("Transferring: " + completeFileName);
                     file.ExtractToFile(completeFileName, true);
+                }
             }
 
             archive.Dispose();
@@ -160,7 +174,6 @@ namespace PrimeHack_Updator
             {
                 Console.WriteLine("Failed to retrieve version info: " + e.Message);
             }
-
 
             return html;
         }
