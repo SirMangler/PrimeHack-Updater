@@ -33,7 +33,7 @@ namespace PrimeHack_Updator
 
             string currentversion = getVersion().Replace("\r\n", "");
 
-            if (currentversion.Equals(currentversion))
+            if (currentversion.Equals(remoteversion))
             {
                 runPrimeHack();
             }
