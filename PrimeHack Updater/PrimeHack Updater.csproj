@@ -42,6 +42,22 @@
   <PropertyGroup>
     <ApplicationIcon>metroid_prime.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>7687A0E9F25BEFCB5EE943B02778E8E3F6308A33</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>PrimeHack Updater_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -66,6 +82,7 @@
     <None Include="App.config" />
     <None Include="ILMerge.props" />
     <None Include="packages.config" />
+    <None Include="PrimeHack Updater_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="metroid_prime.ico" />
@@ -91,4 +108,8 @@
     <Message Text="ILMerge @(MergeAsm) -&gt; $(MergedAssembly)" Importance="high" />
     <ILMerge InputAssemblies="@(MergeAsm)" OutputFile="$(MergedAssembly)" TargetKind="SameAsPrimaryAssembly" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>

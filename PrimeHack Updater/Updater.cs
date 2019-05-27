@@ -20,7 +20,7 @@ namespace PrimeHack_Updator
             string html = VersionCheck.getJSONInfo(@"https://api.github.com/repos/SirMangler/PrimeHack-Updater/releases/latest");
             string remoteversion = VersionCheck.getVersion(html);
 
-            if (remoteversion.Equals(sysversion))
+            if (!remoteversion.Equals(sysversion))
             {
                 Console.WriteLine("PrimeHack Updater has an available update. It is highly recommended you update in order for PrimeHack Updater to support the latest features!");
                 Console.WriteLine("Update Link: https://github.com/SirMangler/PrimeHack-Updater/releases/");
