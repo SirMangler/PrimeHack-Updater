@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 using PrimeHack_Updater;
 using System;
 using System.Diagnostics;
@@ -35,7 +35,7 @@ namespace PrimeHack_Updator
 
             if (currentversion.Equals(remoteversion))
             {
-                runPrimeHack();
+                runPrimeHack(args);
             }
             else
             {
@@ -66,12 +66,17 @@ namespace PrimeHack_Updator
             cutProfiles();
 
             Console.WriteLine("Updated successfully.");
-            runPrimeHack();
+            runPrimeHack(args);
         }
 
-        public static void runPrimeHack()
+        public static void runPrimeHack(string[] args)
         {
-            Process.Start(".\\Dolphin.exe");
+            string arg = "";
+            for (int i = 1; i < args.Length; i++) {
+                arg += " " + args[i];
+            }
+
+            Process.Start(".\\Dolphin.exe", arg);
 
             System.Environment.Exit(1);
         }
@@ -160,3 +165,4 @@ namespace PrimeHack_Updator
 
     }
 }
+
