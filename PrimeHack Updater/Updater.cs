@@ -6,12 +6,15 @@ using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Threading;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace PrimeHack_Updator
 {
     class Updater
     {
-        static string sysversion = "1.0.2";
+        static string sysversion = "1.5.0";
 
         static void Main(string[] args)
         {
@@ -22,11 +25,15 @@ namespace PrimeHack_Updator
 
             if (!remoteversion.Equals(sysversion))
             {
-                Console.WriteLine("PrimeHack Updater has an available update. It is highly recommended you update in order for PrimeHack Updater to support the latest features!");
-                Console.WriteLine("Update Link: https://github.com/SirMangler/PrimeHack-Updater/releases/");
-                Console.WriteLine("Press Any Key To Continue");
-                Console.ReadKey();
+                DialogResult dialogResult = MessageBox.Show("PrimeHack Updater has a new update. Do you want it to update itself?", "PrimeHack Updater", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    InternalUpdater.update();
+                }
             }
+
+            Console.WriteLine("Checking for Local Dolphin Configuration");
+            portableMode();
 
             html = VersionCheck.getJSONInfo(@"https://api.github.com/repos/shiiion/Ishiiruka/releases/latest");
             remoteversion = VersionCheck.getVersion(html);
@@ -35,7 +42,7 @@ namespace PrimeHack_Updator
 
             if (currentversion.Equals(remoteversion))
             {
-                runPrimeHack();
+                runPrimeHack(args);
             }
             else
             {
@@ -60,19 +67,174 @@ namespace PrimeHack_Updator
             string url = assets.browser_download_url;
 
             downloadLatest(url);
-            System.IO.File.WriteAllLines(".\\version.txt", new string[] { remoteversion });
+
+            updateVersionFile(remoteversion, null);
 
             Console.WriteLine("Moving profiles into Documents.");
             cutProfiles();
 
             Console.WriteLine("Updated successfully.");
-            runPrimeHack();
+
+            runPrimeHack(args);
         }
 
-        public static void runPrimeHack()
+        public static void updateVersionFile(string version, string quicklaunch)
         {
-            Process.Start(".\\Dolphin.exe");
+            var lines = System.IO.File.ReadAllLines(".\\version.txt");
 
+            if (quicklaunch == null)
+            {             
+                if (lines.Length > 1)
+                {
+                    quicklaunch = lines.Last();
+                } else
+                {
+                    quicklaunch = "";
+                }
+                    
+            }        
+
+            if (version == null)
+            {
+                version = lines.First();
+            }
+
+            System.IO.File.WriteAllLines(".\\version.txt", new string[] { version, quicklaunch });
+        }
+
+        static string quickpath = null;
+        public static void isoSelection()
+        {
+            string path = getQuickPath();
+
+            if (path.Equals("NEVER")) return;
+
+            if (path.Equals(""))
+            {
+                path = getSelectionResult();
+            } else
+            {
+                if (!File.Exists(path))
+                {
+                    MessageBox.Show("Cannot find file: " + path);
+
+                    path = getSelectionResult();
+                }
+            }
+
+            quickpath = path;
+          
+            updateVersionFile(null, path);
+        }
+
+        public static string getSelectionResult()
+        {
+            string path = "";
+
+            using (var dialog = new ISOSelectionDialog())
+            {
+                var result = dialog.ShowDialog();
+
+                if (result == System.Windows.Forms.DialogResult.OK)
+                {
+                    OpenFileDialog filedialog = new OpenFileDialog();
+                    filedialog.Filter = "All GC/Wii files|*.elf;*.dol;*.gcm;*.tgc;*.iso;*.wbfs;*.ciso;*.gcz;*.wad;*.dff";
+                    filedialog.FilterIndex = 1;
+
+                    if (STAShowDialog(filedialog) == DialogResult.OK)
+                    {
+                        path = filedialog.FileName;
+                    }
+                    else
+                    {
+                        isoSelection();
+                    }
+                }
+                else if (result == DialogResult.No)
+                {
+                    path = "NEVER";
+                }
+                else
+                {
+                    path = "";
+                }
+            }
+
+            return path;
+        }
+
+        public static DialogResult STAShowDialog(FileDialog dialog)
+        {
+            DialogState state = new DialogState();
+
+            state.dialog = dialog;
+
+            System.Threading.Thread t = new System.Threading.Thread(state.ThreadProcShowDialog);
+
+            t.SetApartmentState(System.Threading.ApartmentState.STA);
+
+            t.Start();
+
+            t.Join();
+
+            return state.result;
+        }
+
+        public static void portableMode()
+        {
+            if (!Directory.Exists(".\\Configuration\\"))
+            {
+                Console.WriteLine("Local Configuration Folder does not exist.");
+
+                Directory.CreateDirectory(".\\Configuration\\");
+
+                string DE = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\Dolphin Emulator\");
+
+                if (Directory.Exists(DE)) {
+                    Console.WriteLine("Copying Dolphin Emulator files to local folder.");
+
+                    foreach (string dirPath in Directory.GetDirectories(DE, "*",
+                        SearchOption.AllDirectories))
+                        Directory.CreateDirectory(dirPath.Replace(DE, ".\\Configuration\\"));
+
+                    foreach (string newPath in Directory.GetFiles(DE, "*.*",
+                        SearchOption.AllDirectories))
+                    {
+                        if (newPath.StartsWith(DE + "Logs")) continue;
+
+                        File.Copy(newPath, newPath.Replace(DE, ".\\Configuration\\"), true);
+                    }
+                        
+                }
+            }
+        }
+
+        public static void runPrimeHack(string[] args)
+        {
+            Console.WriteLine("ISO Selection");
+            isoSelection();
+
+            Process p = new Process();
+            p.StartInfo.FileName = ".\\Dolphin.exe";
+            p.StartInfo.UseShellExecute = true;
+
+            if (quickpath != null)
+            {
+                if (!quickpath.Equals("") && !quickpath.Equals("NEVER"))
+                {
+                    p.StartInfo.Arguments = "-e \"" + quickpath + "\"";
+                } else
+                {
+                    p.StartInfo.Arguments = string.Join(" ", args);
+                }
+            } else
+            {
+                p.StartInfo.Arguments = string.Join(" ", args);
+            }
+
+            p.Start();
+
+            //Console.ReadKey();
             System.Environment.Exit(1);
         }
 
@@ -100,11 +262,26 @@ namespace PrimeHack_Updator
             }
         }
 
+        public static string getQuickPath()
+        {
+            if (File.Exists(".\\version.txt"))
+            {
+                var lines = System.IO.File.ReadAllLines(".\\version.txt");
+
+                if (lines.Length > 1)
+                {
+                    return lines.Last();
+                }
+            }
+
+            return "";
+        }
+
         public static string getVersion()
         {
             if (File.Exists(".\\version.txt"))
             {
-                return System.IO.File.ReadAllText(".\\version.txt");
+                return System.IO.File.ReadLines(".\\version.txt").First();
             }
             else
             {
@@ -157,6 +334,15 @@ namespace PrimeHack_Updator
             File.Delete(Path.GetTempPath() + "\\PrimeHackRelease.zip");
         }
 
+        public class DialogState
+        {
+            public DialogResult result;
+            public FileDialog dialog;
 
+            public void ThreadProcShowDialog()
+            {
+                result = dialog.ShowDialog();
+            }
+        }
     }
 }

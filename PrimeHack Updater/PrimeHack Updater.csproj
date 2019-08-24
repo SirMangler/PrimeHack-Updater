@@ -64,8 +64,10 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -74,6 +76,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InternalUpdater.cs" />
+    <Compile Include="ISOSelectionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ISOSelectionDialog.Designer.cs">
+      <DependentUpon>ISOSelectionDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Updater.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VersionCheck.cs" />
@@ -86,7 +100,18 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="metroid_prime.ico" />
+    <None Include="Resources\InternalUpdater.exe" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ISOSelectionDialog.resx">
+      <DependentUpon>ISOSelectionDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
