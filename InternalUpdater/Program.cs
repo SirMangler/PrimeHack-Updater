@@ -43,10 +43,10 @@ namespace InternalUpdater
             try
             {
                 downloadLatest(args[0], path);
-            } catch
+            } catch (Exception e)
             {
-                //Console.ReadLine();
-            }              
+                MessageBox.Show("Download Failed.\nError: "+e.Message, "PrimeHack Updater", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         public static void downloadLatest(string url, string extractpath)
