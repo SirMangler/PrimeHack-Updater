@@ -6,4 +6,4 @@ Mainly these three things:
 
 - Updates PrimeHack to the latest available version.
 - Allows you to boot directly into Prime Trilogy
-- Imports prexisting controller profiles.
+- Imports premade controller profiles.
