@@ -9,6 +9,7 @@ using System.Threading;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Text;
 
 namespace PrimeHack_Updator
 {
@@ -16,6 +17,7 @@ namespace PrimeHack_Updator
     {
         static string sysversion = "1.5.0";
 
+        [STAThread]
         static void Main(string[] args)
         {
             Console.WriteLine("Checking for latest updates.");
@@ -32,8 +34,8 @@ namespace PrimeHack_Updator
                 }
             }
 
-            Console.WriteLine("Checking for Local Dolphin Configuration");
-            portableMode();
+            //Console.WriteLine("Checking for Local Dolphin Configuration");
+            //portableMode();
 
             html = VersionCheck.getJSONInfo(@"https://api.github.com/repos/shiiion/Ishiiruka/releases/latest");
             remoteversion = VersionCheck.getVersion(html);
@@ -180,6 +182,7 @@ namespace PrimeHack_Updator
             return state.result;
         }
 
+        static string DE = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\Dolphin Emulator\");
         public static void portableMode()
         {
             if (!Directory.Exists(".\\Configuration\\"))
@@ -188,7 +191,7 @@ namespace PrimeHack_Updator
 
                 Directory.CreateDirectory(".\\Configuration\\");
 
-                string DE = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\Dolphin Emulator\");
+                
 
                 if (Directory.Exists(DE)) {
                     Console.WriteLine("Copying Dolphin Emulator files to local folder.");
@@ -204,7 +207,9 @@ namespace PrimeHack_Updator
 
                         File.Copy(newPath, newPath.Replace(DE, ".\\Configuration\\"), true);
                     }
-                        
+
+
+                    DE = ".\\Configuration\\";
                 }
             }
         }
@@ -240,10 +245,10 @@ namespace PrimeHack_Updator
 
         public static void cutProfiles()
         {
+            string docspath = DE + @"Config\Profiles\Wiimote\";
             if (Directory.Exists(".\\Profiles\\"))
             {
                 string[] files = Directory.GetFiles(".\\Profiles\\");
-                string docspath = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\Dolphin Emulator\Config\Profiles\Wiimote\");
 
                 if (!Directory.Exists(docspath))
                 {
@@ -259,6 +264,36 @@ namespace PrimeHack_Updator
                 }
 
                 Directory.Delete(".\\Profiles\\", true);
+            } else
+            {
+                Boolean setProfile = false;
+
+                if (!File.Exists(docspath+"Metroid Prime Trilogy v1.ini"))
+                {
+                    File.WriteAllBytes(docspath + "Metroid Prime Trilogy v1.ini", Encoding.ASCII.GetBytes(PrimeHack_Updater.Properties.Resources.Metroid_Prime_Trilogy_v1));
+                    File.WriteAllBytes(".\\Metroid Prime Trilogy v1 Manual.ini", Encoding.ASCII.GetBytes(PrimeHack_Updater.Properties.Resources.Metroid_Prime_Trilogy_v1_Manual));
+
+                    File.WriteAllBytes(DE + @"Config\WiimoteNew.ini", Encoding.ASCII.GetBytes(PrimeHack_Updater.Properties.Resources.WiimoteNew));
+                    setProfile = true;
+                }
+
+                if (!File.Exists(docspath + "Metroid Prime Trilogy v2.ini"))
+                {
+                    File.WriteAllBytes(docspath + "Metroid Prime Trilogy v2.ini", Encoding.ASCII.GetBytes(PrimeHack_Updater.Properties.Resources.Metroid_Prime_Trilogy_v2));
+                    File.WriteAllBytes(".\\Metroid Prime Trilogy v2 Manual.ini", Encoding.ASCII.GetBytes(PrimeHack_Updater.Properties.Resources.Metroid_Prime_Trilogy_v2_Manual));
+
+                    if (!setProfile)
+                        File.WriteAllBytes(DE + @"Config\WiimoteNew.ini", Encoding.ASCII.GetBytes(PrimeHack_Updater.Properties.Resources.WiimoteNew));
+                }
+
+                if (!File.Exists(docspath + "Mendelli.ini"))
+                {
+                    File.WriteAllBytes(docspath + "Mendelli.ini", Encoding.ASCII.GetBytes(PrimeHack_Updater.Properties.Resources.Mendelli));
+                    File.WriteAllBytes(".\\Mendelli Manual.ini", Encoding.ASCII.GetBytes(PrimeHack_Updater.Properties.Resources.Mendelli));
+                   
+                    if (!setProfile)
+                        File.WriteAllBytes(DE + @"Config\WiimoteNew.ini", Encoding.ASCII.GetBytes(PrimeHack_Updater.Properties.Resources.WiimoteNew));
+                }
             }
         }
 

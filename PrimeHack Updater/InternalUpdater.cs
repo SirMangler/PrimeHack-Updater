@@ -24,7 +24,7 @@ namespace PrimeHack_Updater
 
             string temp = Path.Combine(Path.GetTempPath(), "PrimeHack_InternalUpdater.exe");
 
-            if (!File.Exists(temp)) 
+           if (!File.Exists(temp)) 
                 File.WriteAllBytes(temp, PrimeHack_Updater.Properties.Resources.InternalUpdater);            
             
             Process p = new Process();

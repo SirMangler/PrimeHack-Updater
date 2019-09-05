@@ -69,5 +69,225 @@ namespace PrimeHack_Updater.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [Profile]
+        ///Device = DInput/0/Keyboard Mouse
+        ///Buttons/A = `Click 0`
+        ///Buttons/B = SPACE
+        ///Buttons/1 = TAB
+        ///Buttons/2 = ESCAPE
+        ///Buttons/- = `Click 3`
+        ///Buttons/+ = `Click 4`
+        ///Buttons/Home = RETURN
+        ///IR/Center = 100.00000000000000
+        ///IR/Width = 25.000000000000000
+        ///IR/Height = 25.000000000000000
+        ///Swing/Up = LMENU
+        ///Tilt/Forward = LMENU
+        ///Extension = Nunchuk
+        ///Nunchuk/Buttons/C = LCONTROL
+        ///Nunchuk/Buttons/Z = `Click 1`
+        ///Nunchuk/Stick/Up = W
+        ///Nunchuk/Stick/Down = S
+        ///Nunchuk/Stick/Left = A
+        ///Nunchuk/Stick/Right = D
+        ///D-Pad/D [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Mendelli {
+            get {
+                return ResourceManager.GetString("Mendelli", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 	///PRIMEHACK MANUAL\\\
+        ///
+        ///Menus:
+        ///
+        ///Mouse = Menu cursor
+        ///Left Mouse Button = Menu accept
+        ///Space Bar = Menu cancel/back
+        ///
+        ///In-game:
+        ///
+        ///WASD = Move
+        ///Mouse = Aim
+        ///Right Mouse Button (Hold) = Lock/Scan/Spider Ball
+        ///Left Mouse Button = Fire (Hold for charge beam)
+        ///F = Missile
+        ///Q = Visor Selection
+        ///E = Beam Selection
+        ///Tab = Map
+        ///Esc = Pause
+        ///Space Bar = Jump/Dodge
+        ///Left Alt = Morph Ball jump
+        ///Left Ctrl = Morph Ball
+        ///Space Bar (Hold) = Boost Ball
+        ///
+        ///Notes:
+        ///Visors and beams have no binds by default. You will have [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Mendelli_Manual {
+            get {
+                return ResourceManager.GetString("Mendelli_Manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [Profile]
+        ///Device = DInput/0/Keyboard Mouse
+        ///Buttons/A = `Click 0`
+        ///Buttons/B = SPACE
+        ///Buttons/1 = `NUMPAD1`
+        ///Buttons/2 = `NUMPAD2`
+        ///Buttons/- = E
+        ///Buttons/+ = R
+        ///Buttons/Home = LMENU&amp;RETURN
+        ///IR/Center = 100.00000000000000
+        ///IR/Width = 25.000000000000000
+        ///IR/Height = 25.000000000000000
+        ///Extension = Nunchuk
+        ///Nunchuk/Buttons/C = LSHIFT
+        ///Nunchuk/Buttons/Z = `Click 3`
+        ///Nunchuk/Stick/Up = W
+        ///Nunchuk/Stick/Down = S
+        ///Nunchuk/Stick/Left = A
+        ///Nunchuk/Stick/Right = D
+        ///D-Pad/Down = `Click 1`
+        ///.
+        /// </summary>
+        internal static string Metroid_Prime_Trilogy_v1 {
+            get {
+                return ResourceManager.GetString("Metroid_Prime_Trilogy_v1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 	///PRIMEHACK MANUAL\\\
+        ///      (METROID PRIME TRILOGY V1)
+        ///
+        ///Menus:
+        ///
+        ///Mouse = Menu cursor
+        ///Left Mouse Button = Menu accept
+        ///Space Bar = Menu cancel/back
+        ///
+        ///In-game:
+        ///
+        ///WASD = Move
+        ///Mouse = Aim
+        ///Mouse Button 3 (Hold) = Lock/Scan/Spider Ball
+        ///Left Mouse Button = Fire (Hold for charge beam)
+        ///Right Mouse Button = Missile
+        ///E = Visor Selection
+        ///R = Beam Selection
+        ///Numpad 1 = Map
+        ///Numpad 2 = Pause
+        ///Space Bar = Jump/Dodge
+        ///Left Alt = Morph Ball jump
+        ///Left Shift = Morph Ball
+        ///Space Bar (Hold) = Boost Ball
+        ///
+        ///Notes: [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Metroid_Prime_Trilogy_v1_Manual {
+            get {
+                return ResourceManager.GetString("Metroid_Prime_Trilogy_v1_Manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [Profile]
+        ///Device = DInput/0/Keyboard Mouse
+        ///Buttons/A = `Click 0`
+        ///Buttons/B = SPACE
+        ///Buttons/1 = M
+        ///Buttons/2 = I
+        ///Buttons/- = E
+        ///Buttons/+ = R
+        ///Buttons/Home = RETURN
+        ///IR/Center = 100.00000000000000
+        ///IR/Width = 25.000000000000000
+        ///IR/Height = 25.000000000000000
+        ///Extension = Nunchuk
+        ///Nunchuk/Buttons/C = LCONTROL
+        ///Nunchuk/Buttons/Z = `Click 1`
+        ///Nunchuk/Stick/Up = W
+        ///Nunchuk/Stick/Down = S
+        ///Nunchuk/Stick/Left = A
+        ///Nunchuk/Stick/Right = D
+        ///D-Pad/Down = `Click 3`
+        ///.
+        /// </summary>
+        internal static string Metroid_Prime_Trilogy_v2 {
+            get {
+                return ResourceManager.GetString("Metroid_Prime_Trilogy_v2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 	///PRIMEHACK MANUAL\\\
+        ///      (METROID PRIME TRILOGY V2)
+        ///
+        ///Menus:
+        ///
+        ///Mouse = Menu cursor
+        ///Left Mouse Button = Menu accept
+        ///Space Bar = Menu cancel/back
+        ///
+        ///In-game:
+        ///
+        ///WASD = Move
+        ///Mouse = Aim
+        ///Right Mouse Button (Hold) = Lock/Scan/Spider Ball
+        ///Left Mouse Button = Fire (Hold for charge beam)
+        ///Mouse Button 3 = Missile
+        ///E = Visor Selection
+        ///R = Beam Selection
+        ///M = Map
+        ///I = Pause
+        ///Space Bar = Jump/Dodge
+        ///Left Alt = Morph Ball jump
+        ///Left Ctrl = Morph Ball
+        ///Space Bar (Hold) = Boost Ball
+        ///
+        ///Notes:
+        ///Visors and be [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Metroid_Prime_Trilogy_v2_Manual {
+            get {
+                return ResourceManager.GetString("Metroid_Prime_Trilogy_v2_Manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [Wiimote1]
+        ///Device = DInput/0/Keyboard Mouse
+        ///Buttons/A = `Click 2`
+        ///Buttons/B = SPACE
+        ///Buttons/1 = `NUMPAD1`
+        ///Buttons/2 = `NUMPAD2`
+        ///Buttons/- = MINUS
+        ///Buttons/+ = EQUALS
+        ///Buttons/Home = LMENU&amp;RETURN
+        ///IR/Center = 100.00000000000000
+        ///IR/Width = 25.000000000000000
+        ///IR/Height = 25.000000000000000
+        ///Tilt/Forward = `Axis Z+`
+        ///Tilt/Backward = `Axis Z-`
+        ///Extension = Nunchuk
+        ///Nunchuk/Buttons/C = LSHIFT
+        ///Nunchuk/Buttons/Z = `Click 3`
+        ///Nunchuk/Stick/Up = W
+        ///Nunchuk/Stick/Down = S
+        ///Nunchuk/Stick/Left = A
+        ///Nunchuk/Stic [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string WiimoteNew {
+            get {
+                return ResourceManager.GetString("WiimoteNew", resourceCulture);
+            }
+        }
     }
 }

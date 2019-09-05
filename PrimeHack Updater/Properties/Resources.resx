@@ -121,4 +121,25 @@
   <data name="InternalUpdater" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\InternalUpdater.exe;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="Mendelli" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\PrimeHack.ini;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Mendelli_Manual" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\PrimeHack Manual.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Metroid_Prime_Trilogy_v1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Metroid Prime Trilogy v1.ini;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Metroid_Prime_Trilogy_v1_Manual" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Metroid Prime Trilogy v1 Manual.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Metroid_Prime_Trilogy_v2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Metroid Prime Trilogy v2.ini;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Metroid_Prime_Trilogy_v2_Manual" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Metroid Prime Trilogy v2 Manual.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="WiimoteNew" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\WiimoteNew.ini;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
 </root>
