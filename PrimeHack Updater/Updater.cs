@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Text;
 
-namespace PrimeHack_Updator
+namespace PrimeHack_Updater
 {
     class Updater
     {
-        static string sysversion = "1.5.0";
+        static string sysversion = "1.5.1";
 
         [STAThread]
         static void Main(string[] args)

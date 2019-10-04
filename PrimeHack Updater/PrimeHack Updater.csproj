@@ -9,7 +9,7 @@
     <ProjectGuid>{BC203460-914A-46A0-90E3-97897438CE4E}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>PrimeHack_Updater</RootNamespace>
-    <AssemblyName>PrimeHack_Updater</AssemblyName>
+    <AssemblyName>PrimeHack Updater</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -53,7 +53,7 @@
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>PrimeHack_Updator.Updater</StartupObject>
+    <StartupObject>PrimeHack_Updater.Updater</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>metroid_prime.ico</ApplicationIcon>
