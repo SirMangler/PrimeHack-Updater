@@ -34,8 +34,8 @@ namespace PrimeHack_Updator
                 }
             }
 
-            //Console.WriteLine("Checking for Local Dolphin Configuration");
-            //portableMode();
+            Console.WriteLine("Checking for Local Dolphin Configuration");
+            portableMode();
 
             html = VersionCheck.getJSONInfo(@"https://api.github.com/repos/shiiion/Ishiiruka/releases/latest");
             remoteversion = VersionCheck.getVersion(html);
@@ -76,7 +76,6 @@ namespace PrimeHack_Updator
             cutProfiles();
 
             Console.WriteLine("Updated successfully.");
-
             runPrimeHack(args);
         }
 
@@ -185,31 +184,77 @@ namespace PrimeHack_Updator
         static string DE = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\Dolphin Emulator\");
         public static void portableMode()
         {
-            if (!Directory.Exists(".\\Configuration\\"))
+            if (!Directory.Exists(".\\User\\"))
             {
-                Console.WriteLine("Local Configuration Folder does not exist.");
+                Console.WriteLine("Local User Folder does not exist.");
 
-                Directory.CreateDirectory(".\\Configuration\\");
+                Directory.CreateDirectory(".\\User\\");
 
-                
-
-                if (Directory.Exists(DE)) {
-                    Console.WriteLine("Copying Dolphin Emulator files to local folder.");
-
-                    foreach (string dirPath in Directory.GetDirectories(DE, "*",
-                        SearchOption.AllDirectories))
-                        Directory.CreateDirectory(dirPath.Replace(DE, ".\\Configuration\\"));
-
-                    foreach (string newPath in Directory.GetFiles(DE, "*.*",
-                        SearchOption.AllDirectories))
+                try
+                {
+                    if (Directory.Exists(DE))
                     {
-                        if (newPath.StartsWith(DE + "Logs")) continue;
+                        Console.WriteLine("Copying Dolphin Emulator files to local folder.");
 
-                        File.Copy(newPath, newPath.Replace(DE, ".\\Configuration\\"), true);
+                        foreach (string dirPath in Directory.GetDirectories(DE + "Config\\Profiles", "*",
+                            SearchOption.AllDirectories))
+                            Directory.CreateDirectory(dirPath.Replace(DE, ".\\User\\"));
+
+                        foreach (string newPath in Directory.GetFiles(DE + "Config\\Profiles", "*.*",
+                            SearchOption.AllDirectories))
+                        {
+                            File.Copy(newPath, newPath.Replace(DE, ".\\User\\"), true);
+                        }
+
+                        string[] paths = new string[] {
+                                "Config\\Dolphin.ini",
+                                "Config\\GFX.ini",
+                                "Config\\Hotkeys.ini",
+                                "Config\\UI.ini",
+                                "Load\\Titles.txt",
+                                "Wii\\title\\00010000\\52334d45",
+                                "Wii\\title\\00010000\\52334d50",
+                                "Wii\\shared1\\00000000.app",
+                                "Wii\\shared1\\00000001.app",
+                                "Wii\\shared1\\00000002.app",
+                                "Wii\\shared1\\content.map",
+                                "Wii\\shared2\\menu\\FaceLib",
+                                "Wii\\shared2\\sys\\net\\02\\config.dat",
+                                "Wii\\shared2\\sys\\SYSCONF",
+                                "Wii\\shared2\\wc24",
+                                "Wii\\sys\\cert.sys",
+                                "Wii\\sys\\uid.sys",
+                                "Wii\\ticket\\00010002\\48414341.tik",
+                                "Wii\\title\\00000001\\00000002",
+                                "Wii\\title\\00010002\\48414341",
+                                "GameSettings\\R3ME01.ini",
+                                "GameSettings\\R3MP01.ini"
+                    };
+
+                        foreach (string path in paths)
+                        {
+                            string p = DE + path;
+                            string c = ".\\User\\" + path;
+                            string dir = c.Substring(0, c.LastIndexOf(Path.DirectorySeparatorChar));
+
+                            if (!Directory.Exists(dir))
+                            {
+                                Directory.CreateDirectory(dir);
+                            }
+                                
+                            if (File.Exists(p))
+                            {
+                                File.Copy(p, c, true);
+                            }                         
+                        }
+
+                        DE = ".\\User\\";
                     }
-
-
-                    DE = ".\\Configuration\\";
+                } catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    Console.WriteLine(e.InnerException);
+                    Console.ReadLine();
                 }
             }
         }
@@ -316,7 +361,13 @@ namespace PrimeHack_Updator
         {
             if (File.Exists(".\\version.txt"))
             {
-                return System.IO.File.ReadLines(".\\version.txt").First();
+                try
+                {
+                    return System.IO.File.ReadLines(".\\version.txt").First();
+                } catch (Exception)
+                {
+                    return "-1";
+                }
             }
             else
             {
@@ -358,7 +409,7 @@ namespace PrimeHack_Updator
                 }
 
                 if (file.Name != "") {
-                    Console.WriteLine("Transferring: " + completeFileName);
+                    //Console.WriteLine("Transferring: " + completeFileName);
                     file.ExtractToFile(completeFileName, true);
                 }
             }
