@@ -22,7 +22,7 @@ namespace PrimeHack_Updater
             }
 
             dynamic j = JObject.Parse(html);
-            string version = (string)j.tag_name;
+            string version = (string) j.tag_name;
 
             return version;
         }
