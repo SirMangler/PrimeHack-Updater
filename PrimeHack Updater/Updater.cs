@@ -206,7 +206,6 @@ namespace PrimeHack_Updater
 
                         string[] paths = new string[] {
                                 //"Config\\Dolphin.ini",
-                                "Config\\GFX.ini",
                                 "Config\\Hotkeys.ini",
                                 "Config\\UI.ini",
                                 "Config\\WiimoteNew.ini",
