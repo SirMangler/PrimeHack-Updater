@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimeHack Updater", "PrimeH
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternalUpdater", "InternalUpdater\InternalUpdater.csproj", "{9781BFB8-690F-498F-BE50-11279EB4571B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimeHackSettings", "PrimeHackSettings\PrimeHackSettings.csproj", "{B4B1C97E-013C-408F-906B-40FBEFFE4C3C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,18 +41,6 @@ Global
 		{9781BFB8-690F-498F-BE50-11279EB4571B}.Release|x64.Build.0 = Release|Any CPU
 		{9781BFB8-690F-498F-BE50-11279EB4571B}.Release|x86.ActiveCfg = Release|Any CPU
 		{9781BFB8-690F-498F-BE50-11279EB4571B}.Release|x86.Build.0 = Release|Any CPU
-		{B4B1C97E-013C-408F-906B-40FBEFFE4C3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B4B1C97E-013C-408F-906B-40FBEFFE4C3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B4B1C97E-013C-408F-906B-40FBEFFE4C3C}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{B4B1C97E-013C-408F-906B-40FBEFFE4C3C}.Debug|x64.Build.0 = Debug|Any CPU
-		{B4B1C97E-013C-408F-906B-40FBEFFE4C3C}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{B4B1C97E-013C-408F-906B-40FBEFFE4C3C}.Debug|x86.Build.0 = Debug|Any CPU
-		{B4B1C97E-013C-408F-906B-40FBEFFE4C3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B4B1C97E-013C-408F-906B-40FBEFFE4C3C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B4B1C97E-013C-408F-906B-40FBEFFE4C3C}.Release|x64.ActiveCfg = Release|Any CPU
-		{B4B1C97E-013C-408F-906B-40FBEFFE4C3C}.Release|x64.Build.0 = Release|Any CPU
-		{B4B1C97E-013C-408F-906B-40FBEFFE4C3C}.Release|x86.ActiveCfg = Release|Any CPU
-		{B4B1C97E-013C-408F-906B-40FBEFFE4C3C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
