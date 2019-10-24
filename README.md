@@ -1,5 +1,5 @@
 # PrimeHack-Updater
-An Updater/Installer for the [latest PrimeHack versions by Shiiion](https://github.com/shiiion/Ishiiruka).
+An Updater/Installer for the [latest PrimeHack versions by Shiiion](https://github.com/shiiion/dolphin).
 
 # What does?
 Mainly these three things:
