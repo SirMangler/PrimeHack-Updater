@@ -13,7 +13,8 @@ namespace PrimeHack_Updater
 {
     class Updater
     {
-        static string sysversion = "1.5.2";
+        static string sysversion = "1.5.3";
+        static CfgManager cfg = new CfgManager();
 
         [STAThread]
         static void Main(string[] args)
@@ -32,15 +33,18 @@ namespace PrimeHack_Updater
                 }
             }
 
-            Console.WriteLine("Checking for Local Dolphin Configuration");
+            Console.WriteLine("Importing PrimeHack settings");
             portableMode();
 
-            html = VersionCheck.getJSONInfo(@"https://api.github.com/repos/shiiion/dolphin/releases/latest"); // https://api.github.com/repos/shiiion/dolphin/releases/latest
+            string repo;
+            if (cfg.isMainBranch())
+                repo = @"https://api.github.com/repos/shiiion/dolphin/releases/latest";
+            else repo = @"https://api.github.com/repos/shiiion/Ishiiruka/releases/latest";
+
+            html = VersionCheck.getJSONInfo(repo);
             remoteversion = VersionCheck.getVersion(html);
 
-            string currentversion = getVersion().Replace("\r\n", "");
-
-            if (currentversion.Equals(remoteversion))
+            if (cfg.isVersionsEqual(remoteversion))
             {
                 runPrimeHack(args);
             }
@@ -68,43 +72,16 @@ namespace PrimeHack_Updater
 
             downloadLatest(url);
 
-            updateVersionFile(remoteversion, null);
-
-            Console.WriteLine("Moving profiles into Documents.");
-            cutProfiles();
+            cfg.setVersion(remoteversion);
 
             Console.WriteLine("Updated successfully.");
             runPrimeHack(args);
         }
 
-        public static void updateVersionFile(string version, string quicklaunch)
-        {
-            var lines = System.IO.File.ReadAllLines(".\\version.txt");
-
-            if (quicklaunch == null)
-            {             
-                if (lines.Length > 1)
-                {
-                    quicklaunch = lines.Last();
-                } else
-                {
-                    quicklaunch = "";
-                }
-                    
-            }        
-
-            if (version == null)
-            {
-                version = lines.First();
-            }
-
-            System.IO.File.WriteAllLines(".\\version.txt", new string[] { version, quicklaunch });
-        }
-
         static string quickpath = null;
         public static void isoSelection()
         {
-            string path = getQuickPath();
+            string path = cfg.getISOPath();
 
             if (path.Equals("NEVER")) return;
 
@@ -122,8 +99,8 @@ namespace PrimeHack_Updater
             }
 
             quickpath = path;
-          
-            updateVersionFile(null, path);
+
+            cfg.setISOPath(quickpath);
         }
 
         public static string getSelectionResult()
@@ -182,194 +159,102 @@ namespace PrimeHack_Updater
         static string DE = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\Dolphin Emulator\");
         public static void portableMode()
         {
-            if (!Directory.Exists(".\\User\\"))
+            string[] lines = File.ReadAllLines(DE+ "Config\\Dolphin.ini");
+
+            string primesettings = "";
+            bool beam = false;
+
+            if (File.Exists("hack_config.ini"))
             {
-                Console.WriteLine("Local User Folder does not exist.");
-
-                Directory.CreateDirectory(".\\User\\");
-
-                try
+                foreach (string line in File.ReadLines("hack_config.ini"))
                 {
-                    if (Directory.Exists(DE))
+                    if (line.StartsWith("[beam]"))
                     {
-                        Console.WriteLine("Copying Dolphin Emulator files to local folder.");
-
-                        foreach (string dirPath in Directory.GetDirectories(DE + "Config\\Profiles", "*",
-                            SearchOption.AllDirectories))
-                            Directory.CreateDirectory(dirPath.Replace(DE, ".\\User\\"));
-
-                        foreach (string newPath in Directory.GetFiles(DE + "Config\\Profiles", "*.*",
-                            SearchOption.AllDirectories))
-                        {
-                            File.Copy(newPath, newPath.Replace(DE, ".\\User\\"), true);
-                        }
-
-                        string[] paths = new string[] {
-                                //"Config\\Dolphin.ini",
-                                "Config\\Hotkeys.ini",
-                                "Config\\UI.ini",
-                                "Config\\WiimoteNew.ini",
-                                "Load\\Titles.txt",
-                                "Wii\\title\\00010000\\52334d45",
-                                "Wii\\title\\00010000\\52334d50",
-                                "Wii\\shared1\\00000000.app",
-                                "Wii\\shared1\\00000001.app",
-                                "Wii\\shared1\\00000002.app",
-                                "Wii\\shared1\\content.map",
-                                "Wii\\shared2\\menu\\FaceLib",
-                                "Wii\\shared2\\sys\\net\\02\\config.dat",
-                                "Wii\\shared2\\sys\\SYSCONF",
-                                "Wii\\shared2\\wc24",
-                                "Wii\\sys\\cert.sys",
-                                "Wii\\sys\\uid.sys",
-                                "Wii\\ticket\\00010002\\48414341.tik",
-                                "Wii\\title\\00000001\\00000002",
-                                "Wii\\title\\00010002\\48414341",
-                                "GameSettings\\R3ME01.ini",
-                                "GameSettings\\R3MP01.ini"
-                    };
-
-                        foreach (string path in paths)
-                        {
-                            string p = DE + path;
-                            string c = ".\\User\\" + path;
-                            string dir = c.Substring(0, c.LastIndexOf(Path.DirectorySeparatorChar));
-
-                            if (!Directory.Exists(dir))
-                            {
-                                Directory.CreateDirectory(dir);
-                            }
-                                
-                            if (File.Exists(p))
-                            {
-                                File.Copy(p, c, true);
-                            }                         
-                        }
-
-                        string[] lines = File.ReadAllLines(DE+ "Config\\Dolphin.ini");
-                        List<String> newconfig = new List<String>();
-
-                        foreach (string line in lines) 
-                        {
-                            if (line.Contains("Dolphin Emulator"))
-                            {
-                                string[] split = line.Split(new[] { "Dolphin Emulator" }, StringSplitOptions.None);
-                                string newpath = "./User" + split[1];
-
-                                string[] var = line.Split(new[] { " = " }, StringSplitOptions.None);
-
-                                newconfig.Add(var[0] + " = " + newpath);
-                                
-                                continue;
-                            }
-
-                            newconfig.Add(line);
-                         }
-
-                        File.WriteAllLines(".\\User\\Config\\Dolphin.ini", newconfig);
-
-                        DE = ".\\User\\";
-
-                        string primesettings = "";
-                        bool beam = false;
-
-                        if (File.Exists("hack_config.ini"))
-                        {
-                            foreach (string line in File.ReadLines("hack_config.ini"))
-                            {
-                                if (line.StartsWith("[beam]"))
-                                {
-                                    beam = true;
-                                    continue;
-                                }
-
-                                if (line.StartsWith("[visor]"))
-                                {
-                                    beam = false;
-                                    continue;
-                                }
-
-                                if (line.StartsWith("sensitivity"))
-                                {
-                                    primesettings += "PrimeHack/Camera Sensitivity = "+line.Replace("sensitivity = ", "") +"\n";
-                                    continue;
-                                }
-
-                                if (line.StartsWith("cursor_sensitivity"))
-                                {
-                                    primesettings += "PrimeHack/Cursor Sensitivity = " + line.Replace("cursor_sensitivity = ", "") + "\n";
-                                    continue;
-                                }
-
-                                if (line.StartsWith("fov"))
-                                {
-                                    primesettings += "PrimeHack/Field of View = " + line.Replace("fov = ", "") + "\n";
-                                    continue;
-                                }
-
-                                if (line.StartsWith("inverted_y"))
-                                {
-                                    primesettings += "PrimeHack/Invert Y axis = " + line.Replace("inverted_y = ", "") + "\n";
-                                    continue;
-                                }
-
-                                if (line.StartsWith("index_0"))
-                                {
-                                    if (beam)
-                                        primesettings += "PrimeHack/Beam 1 = " + line.Replace("index_0 = ", "").Replace("&", " & ") + "\n";
-                                    else
-                                        primesettings += "PrimeHack/Visor 1 = " + line.Replace("index_0 = ", "").Replace("&", " & ") + "\n";
-
-                                    continue;
-                                }
-
-                                if (line.StartsWith("index_1"))
-                                {
-                                    if (beam)
-                                        primesettings += "PrimeHack/Beam 2 = " + line.Replace("index_1 = ", "").Replace("&", " & ") + "\n";
-                                    else
-                                        primesettings += "PrimeHack/Visor 2 = " + line.Replace("index_1 = ", "").Replace("&", " & ") + "\n";
-
-                                    continue;
-                                }
-
-                                if (line.StartsWith("index_2"))
-                                {
-                                    if (beam)
-                                        primesettings += "PrimeHack/Beam 3 = " + line.Replace("index_2 = ", "").Replace("&", " & ") + "\n";
-                                    else
-                                        primesettings += "PrimeHack/Visor 3 = " + line.Replace("index_2 = ", "").Replace("&", " & ") + "\n";
-
-                                    continue;
-                                }
-
-                                if (line.StartsWith("index_3"))
-                                {
-                                    if (beam)
-                                        primesettings += "PrimeHack/Beam 4 = " + line.Replace("index_3 = ", "").Replace("&", " & ") + "\n";
-                                    else
-                                        primesettings += "PrimeHack/Visor 4 = " + line.Replace("index_3 = ", "").Replace("&", " & ") + "\n";
-
-                                    continue;
-                                }
-                            }
-
-                            string[] oldwiimotenew = File.ReadAllLines(".\\User\\Config\\WiimoteNew.ini");
-                            List<string> newwiimote = new List<string>();
-
-                            newwiimote.AddRange(oldwiimotenew);
-                            newwiimote.Insert(2, primesettings.Substring(0, primesettings.Length-1));
-
-                            File.WriteAllLines(".\\User\\Config\\WiimoteNew.ini", newwiimote.ToArray());
-                        }                     
+                        beam = true;
+                        continue;
                     }
-                } catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    Console.WriteLine(e.InnerException);
-                    Console.ReadLine();
+
+                    if (line.StartsWith("[visor]"))
+                    {
+                        beam = false;
+                        continue;
+                    }
+
+                    if (line.StartsWith("sensitivity"))
+                    {
+                        primesettings += "PrimeHack/Camera Sensitivity = "+line.Replace("sensitivity = ", "") +"\n";
+                        continue;
+                    }
+
+                    if (line.StartsWith("cursor_sensitivity"))
+                    {
+                        primesettings += "PrimeHack/Cursor Sensitivity = " + line.Replace("cursor_sensitivity = ", "") + "\n";
+                        continue;
+                    }
+
+                    if (line.StartsWith("fov"))
+                    {
+                        primesettings += "PrimeHack/Field of View = " + line.Replace("fov = ", "") + "\n";
+                        continue;
+                    }
+
+                    if (line.StartsWith("inverted_y"))
+                    {
+                        primesettings += "PrimeHack/Invert Y axis = " + line.Replace("inverted_y = ", "") + "\n";
+                        continue;
+                    }
+
+                    if (line.StartsWith("index_0"))
+                    {
+                        if (beam)
+                            primesettings += "PrimeHack/Beam 1 = " + line.Replace("index_0 = ", "").Replace("&", " & ") + "\n";
+                        else
+                            primesettings += "PrimeHack/Visor 1 = " + line.Replace("index_0 = ", "").Replace("&", " & ") + "\n";
+
+                        continue;
+                    }
+
+                    if (line.StartsWith("index_1"))
+                    {
+                        if (beam)
+                            primesettings += "PrimeHack/Beam 2 = " + line.Replace("index_1 = ", "").Replace("&", " & ") + "\n";
+                        else
+                            primesettings += "PrimeHack/Visor 2 = " + line.Replace("index_1 = ", "").Replace("&", " & ") + "\n";
+
+                        continue;
+                    }
+
+                    if (line.StartsWith("index_2"))
+                    {
+                        if (beam)
+                            primesettings += "PrimeHack/Beam 3 = " + line.Replace("index_2 = ", "").Replace("&", " & ") + "\n";
+                        else
+                            primesettings += "PrimeHack/Visor 3 = " + line.Replace("index_2 = ", "").Replace("&", " & ") + "\n";
+
+                        continue;
+                    }
+
+                    if (line.StartsWith("index_3"))
+                    {
+                        if (beam)
+                            primesettings += "PrimeHack/Beam 4 = " + line.Replace("index_3 = ", "").Replace("&", " & ") + "\n";
+                        else
+                            primesettings += "PrimeHack/Visor 4 = " + line.Replace("index_3 = ", "").Replace("&", " & ") + "\n";
+
+                        continue;
+                    }
                 }
-            }
+
+                string[] oldwiimotenew = File.ReadAllLines(DE+"\\Config\\WiimoteNew.ini");
+                List<string> newwiimote = new List<string>();
+
+                newwiimote.AddRange(oldwiimotenew);
+                newwiimote.Insert(2, primesettings.Substring(0, primesettings.Length-1));
+
+                File.WriteAllLines(DE+"\\Config\\WiimoteNew.ini", newwiimote.ToArray());
+
+                File.Delete(".\\hack_config.ini");
+            }                     
         }
 
         public static void runPrimeHack(string[] args)
@@ -399,94 +284,6 @@ namespace PrimeHack_Updater
 
             //Console.ReadKey();
             System.Environment.Exit(1);
-        }
-
-        public static void cutProfiles()
-        {
-            string docspath = DE + @"Config\Profiles\Wiimote\";
-            if (Directory.Exists(".\\Profiles\\"))
-            {
-                string[] files = Directory.GetFiles(".\\Profiles\\");
-
-                if (!Directory.Exists(docspath))
-                {
-                    Directory.CreateDirectory(docspath);
-                }
-
-                foreach (string file in files)
-                {
-                    String newpath = docspath + file.Replace(".\\Profiles\\", "");
-
-                    if (!File.Exists(file))
-                        File.Copy(file, newpath, true);      
-                }
-
-                Directory.Delete(".\\Profiles\\", true);
-            } else
-            {
-                Boolean setProfile = false;
-
-                if (!File.Exists(docspath+"Metroid Prime Trilogy v1.ini"))
-                {
-                    File.WriteAllBytes(docspath + "Metroid Prime Trilogy v1.ini", Encoding.ASCII.GetBytes(PrimeHack_Updater.Properties.Resources.Metroid_Prime_Trilogy_v1));
-                    File.WriteAllBytes(".\\Metroid Prime Trilogy v1 Manual.ini", Encoding.ASCII.GetBytes(PrimeHack_Updater.Properties.Resources.Metroid_Prime_Trilogy_v1_Manual));
-
-                    File.WriteAllBytes(DE + @"Config\WiimoteNew.ini", Encoding.ASCII.GetBytes(PrimeHack_Updater.Properties.Resources.WiimoteNew));
-                    setProfile = true;
-                }
-
-                if (!File.Exists(docspath + "Metroid Prime Trilogy v2.ini"))
-                {
-                    File.WriteAllBytes(docspath + "Metroid Prime Trilogy v2.ini", Encoding.ASCII.GetBytes(PrimeHack_Updater.Properties.Resources.Metroid_Prime_Trilogy_v2));
-                    File.WriteAllBytes(".\\Metroid Prime Trilogy v2 Manual.ini", Encoding.ASCII.GetBytes(PrimeHack_Updater.Properties.Resources.Metroid_Prime_Trilogy_v2_Manual));
-
-                    if (!setProfile)
-                        File.WriteAllBytes(DE + @"Config\WiimoteNew.ini", Encoding.ASCII.GetBytes(PrimeHack_Updater.Properties.Resources.WiimoteNew));
-                }
-
-                if (!File.Exists(docspath + "Mendelli.ini"))
-                {
-                    File.WriteAllBytes(docspath + "Mendelli.ini", Encoding.ASCII.GetBytes(PrimeHack_Updater.Properties.Resources.Mendelli));
-                    File.WriteAllBytes(".\\Mendelli Manual.ini", Encoding.ASCII.GetBytes(PrimeHack_Updater.Properties.Resources.Mendelli));
-                   
-                    if (!setProfile)
-                        File.WriteAllBytes(DE + @"Config\WiimoteNew.ini", Encoding.ASCII.GetBytes(PrimeHack_Updater.Properties.Resources.WiimoteNew));
-                }
-            }
-        }
-
-        public static string getQuickPath()
-        {
-            if (File.Exists(".\\version.txt"))
-            {
-                var lines = System.IO.File.ReadAllLines(".\\version.txt");
-
-                if (lines.Length > 1)
-                {
-                    return lines.Last();
-                }
-            }
-
-            return "";
-        }
-
-        public static string getVersion()
-        {
-            if (File.Exists(".\\version.txt"))
-            {
-                try
-                {
-                    return System.IO.File.ReadLines(".\\version.txt").First();
-                } catch (Exception)
-                {
-                    return "-1";
-                }
-            }
-            else
-            {
-                File.Create("version.txt");
-                return "-1";
-            }
         }
 
         public static void downloadLatest(string url)

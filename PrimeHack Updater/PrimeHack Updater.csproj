@@ -77,7 +77,7 @@
     <TargetZone>Internet</TargetZone>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
+    <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
@@ -100,6 +100,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CfgManager.cs" />
     <Compile Include="InternalUpdater.cs" />
     <Compile Include="ISOSelectionDialog.cs">
       <SubType>Form</SubType>
@@ -121,18 +122,13 @@
     <None Include="ILMerge.props" />
     <None Include="packages.config" />
     <None Include="PrimeHack.pfx" />
-    <None Include="Properties\app.manifest" />
-    <None Include="Resources\Metroid Prime Trilogy v1.ini" />
-    <None Include="Resources\Metroid Prime Trilogy v2.ini" />
-    <None Include="Resources\PrimeHack.ini" />
-    <None Include="Resources\WiimoteNew.ini" />
+    <None Include="Properties\app.manifest">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="metroid_prime.ico" />
     <Content Include="Resources\InternalUpdater.exe" />
-    <None Include="Resources\PrimeHack Manual.txt" />
-    <None Include="Resources\Metroid Prime Trilogy v2 Manual.txt" />
-    <None Include="Resources\Metroid Prime Trilogy v1 Manual.txt" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ISOSelectionDialog.resx">
