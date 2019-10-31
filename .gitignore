@@ -266,3 +266,4 @@ __pycache__/
 /PrimeHackSettings/Properties/AssemblyInfo.cs
 /PrimeHackSettings/Program.cs
 /PrimeHackSettings/PrimeHackSettings.csproj
+*.ini
