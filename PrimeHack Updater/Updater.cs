@@ -36,7 +36,6 @@ namespace PrimeHack_Updater
                 }
             }
 
-            Console.WriteLine("Importing PrimeHack settings");
             portableMode();
 
             string repo;
@@ -169,6 +168,7 @@ namespace PrimeHack_Updater
             {
                 if (File.Exists("hack_config.ini"))
                 {
+                    Console.WriteLine("Importing PrimeHack settings");
                     foreach (string line in File.ReadLines("hack_config.ini"))
                     {
                         if (line.StartsWith("[beam]"))
