@@ -44,6 +44,9 @@ namespace PrimeHack_Updater
                 }
             } else
             {
+                if (!Updater.WriteAccess(".\\"))
+                    Updater.restartAsAdmin();
+
                 File.Create("./updater.cfg");
             }
         }
@@ -74,6 +77,9 @@ namespace PrimeHack_Updater
 
         public void saveCfg()
         {
+            if (!Updater.WriteAccess(".\\"))
+                Updater.restartAsAdmin();
+
             if (!File.Exists("./updater.cfg"))
                 loadCfg();
 

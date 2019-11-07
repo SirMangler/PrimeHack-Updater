@@ -6,24 +6,28 @@ using System.IO.Compression;
 using System.Net;
 using System.Linq;
 using System.Windows.Forms;
-using System.Text;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Security.AccessControl;
 using System.Security.Principal;
+using System.Reflection;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
 
 namespace PrimeHack_Updater
 {
     class Updater
     {
-        static string sysversion = "1.5.4";
+        static string sysversion = "1.5.5";
         static CfgManager cfg = new CfgManager();
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool AllocConsole();
 
         [STAThread]
         static void Main(string[] args)
         {
-            Console.WriteLine("Checking for latest updates.");
-
             string html = VersionCheck.getJSONInfo(@"https://api.github.com/repos/SirMangler/PrimeHack-Updater/releases/latest");
             string remoteversion = VersionCheck.getVersion(html);
 
@@ -52,6 +56,8 @@ namespace PrimeHack_Updater
             }
             else
             {
+                AllocConsole();
+
                 while (true)
                 {
                     Process[] runningProcesses = Process.GetProcessesByName("Dolphin");
@@ -67,6 +73,9 @@ namespace PrimeHack_Updater
                 }
             }
 
+            if (!WriteAccess(".\\"))
+                restartAsAdmin();
+
             dynamic j = JObject.Parse(html);
             JArray ja = j.assets;
             dynamic assets = ja[0];
@@ -78,6 +87,30 @@ namespace PrimeHack_Updater
 
             Console.WriteLine("Updated successfully.");
             runPrimeHack(args);
+        }
+
+        public static void restartAsAdmin()
+        {
+            WindowsPrincipal pricipal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
+            bool hasAdministrativeRight = pricipal.IsInRole(WindowsBuiltInRole.Administrator);
+            if (!hasAdministrativeRight)
+            {
+                string fileName = Assembly.GetExecutingAssembly().Location;
+                ProcessStartInfo processInfo = new ProcessStartInfo();
+                processInfo.Verb = "runas";
+                processInfo.FileName = fileName;
+
+                try
+                {
+                    Process.Start(processInfo);
+                }
+                catch (Win32Exception)
+                {
+                    
+                }
+
+                System.Environment.Exit(1);
+            }
         }
 
         static string quickpath = null;
@@ -342,7 +375,7 @@ namespace PrimeHack_Updater
 
         public static void downloadLatest(string url)
         {
-            Console.WriteLine("Downloading: " + url);
+            Console.WriteLine("New Update!\nDownloading: " + url);
             using (var client = new WebClient())
             {
                 client.DownloadFile(url, Path.GetTempPath() + "\\PrimeHackRelease.zip");
