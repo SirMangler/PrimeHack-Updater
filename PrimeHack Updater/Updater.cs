@@ -18,7 +18,7 @@ namespace PrimeHack_Updater
 {
     class Updater
     {
-        static string sysversion = "1.5.5";
+        static string sysversion = "1.5.6";
         static CfgManager cfg = new CfgManager();
 
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -40,7 +40,7 @@ namespace PrimeHack_Updater
                 }
             }
 
-            portableMode();
+            migrate();
 
             string repo;
             if (cfg.isMainBranch())
@@ -192,129 +192,126 @@ namespace PrimeHack_Updater
         }
 
         static string DE = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\Dolphin Emulator\");
-        public static void portableMode()
+        public static void migrate()
         {
             string primesettings = "";
             bool beam = false;
 
-            if (cfg.isMainBranch())
+            if (File.Exists("hack_config.ini"))
             {
-                if (File.Exists("hack_config.ini"))
+                Console.WriteLine("Importing PrimeHack settings");
+                foreach (string line in File.ReadLines("hack_config.ini"))
                 {
-                    Console.WriteLine("Importing PrimeHack settings");
-                    foreach (string line in File.ReadLines("hack_config.ini"))
+                    if (line.StartsWith("[beam]"))
                     {
-                        if (line.StartsWith("[beam]"))
-                        {
-                            beam = true;
-                            continue;
-                        }
-
-                        if (line.StartsWith("[visor]"))
-                        {
-                            beam = false;
-                            continue;
-                        }
-
-                        if (line.StartsWith("sensitivity"))
-                        {
-                            primesettings += "PrimeHack/Camera Sensitivity = " + line.Replace("sensitivity = ", "") + "\n";
-                            continue;
-                        }
-
-                        if (line.StartsWith("cursor_sensitivity"))
-                        {
-                            primesettings += "PrimeHack/Cursor Sensitivity = " + line.Replace("cursor_sensitivity = ", "") + "\n";
-                            continue;
-                        }
-
-                        if (line.StartsWith("fov"))
-                        {
-                            primesettings += "PrimeHack/Field of View = " + line.Replace("fov = ", "") + "\n";
-                            continue;
-                        }
-
-                        if (line.StartsWith("inverted_y"))
-                        {
-                            primesettings += "PrimeHack/Invert Y axis = " + line.Replace("inverted_y = ", "") + "\n";
-                            continue;
-                        }
-
-                        String nline;
-
-                        if (line.StartsWith("index_0"))
-                        {
-                            if (beam)
-                                nline = "PrimeHack/Beam 1 = " + line.Replace("index_0 = ", "");
-                            else
-                                nline = "PrimeHack/Visor 1 = " + line.Replace("index_0 = ", "");
-
-                            primesettings += Regex.Replace(nline, "\b&\b", " & ") + "\n";
-
-                            continue;
-                        }
-
-                        if (line.StartsWith("index_1"))
-                        {
-                            if (beam)
-                                nline = "PrimeHack/Beam 2 = " + line.Replace("index_1 = ", "");
-                            else
-                                nline = "PrimeHack/Visor 2 = " + line.Replace("index_1 = ", "");
-
-                            primesettings += Regex.Replace(nline, "\b&\b", " & ") + "\n";
-
-                            continue;
-                        }
-
-                        if (line.StartsWith("index_2"))
-                        {
-                            if (beam)
-                                nline = "PrimeHack/Beam 3 = " + line.Replace("index_2 = ", "");
-                            else
-                                nline = "PrimeHack/Visor 3 = " + line.Replace("index_2 = ", "");
-
-                            primesettings += Regex.Replace(nline, "\b&\b", " & ") + "\n";
-
-                            continue;
-                        }
-
-                        if (line.StartsWith("index_3"))
-                        {
-                            if (beam)
-                               nline = "PrimeHack/Beam 4 = " + line.Replace("index_3 = ", "");
-                            else
-                                nline = "PrimeHack/Visor 4 = " + line.Replace("index_3 = ", "");
-
-                            primesettings += Regex.Replace(nline, "\b&\b", " & ") + "\n";
-
-                            continue;
-                        }
+                        beam = true;
+                        continue;
                     }
 
-                    String config = DE + "\\Config\\WiimoteNew.ini";
-                    if (!File.Exists(config))
+                    if (line.StartsWith("[visor]"))
                     {
-                        FileStream f = File.Create(config);
-                        f.Close();
-
-                        primesettings = "[Wiimote1]\n" + primesettings;
-
-                        File.WriteAllLines(config, primesettings.Split('\n'));
-                    }
-                    else
-                    {
-                        string[] oldwiimotenew = File.ReadAllLines(config);
-                        List<string> newwiimote = new List<string>();
-
-                        newwiimote.AddRange(oldwiimotenew);
-                        newwiimote.Insert(2, primesettings.Substring(0, primesettings.Length - 1));
-
-                        File.WriteAllLines(config, newwiimote.ToArray());
+                        beam = false;
+                        continue;
                     }
 
-                    File.Delete(".\\hack_config.ini");
+                    if (line.StartsWith("sensitivity"))
+                    {
+                        primesettings += "PrimeHack/Camera Sensitivity = " + line.Replace("sensitivity = ", "") + "\n";
+                        continue;
+                    }
+
+                    if (line.StartsWith("cursor_sensitivity"))
+                    {
+                        primesettings += "PrimeHack/Cursor Sensitivity = " + line.Replace("cursor_sensitivity = ", "") + "\n";
+                        continue;
+                    }
+
+                    if (line.StartsWith("fov"))
+                    {
+                        primesettings += "PrimeHack/Field of View = " + line.Replace("fov = ", "") + "\n";
+                        continue;
+                    }
+
+                    if (line.StartsWith("inverted_y"))
+                    {
+                        primesettings += "PrimeHack/Invert Y axis = " + line.Replace("inverted_y = ", "") + "\n";
+                        continue;
+                    }
+
+                    String nline;
+
+                    if (line.StartsWith("index_0"))
+                    {
+                        if (beam)
+                            nline = "PrimeHack/Beam 1 = " + line.Replace("index_0 = ", "");
+                        else
+                            nline = "PrimeHack/Visor 1 = " + line.Replace("index_0 = ", "");
+
+                        primesettings += Regex.Replace(nline, "\b&\b", " & ") + "\n";
+
+                        continue;
+                    }
+
+                    if (line.StartsWith("index_1"))
+                    {
+                        if (beam)
+                            nline = "PrimeHack/Beam 2 = " + line.Replace("index_1 = ", "");
+                        else
+                            nline = "PrimeHack/Visor 2 = " + line.Replace("index_1 = ", "");
+
+                        primesettings += Regex.Replace(nline, "\b&\b", " & ") + "\n";
+
+                        continue;
+                    }
+
+                    if (line.StartsWith("index_2"))
+                    {
+                        if (beam)
+                            nline = "PrimeHack/Beam 3 = " + line.Replace("index_2 = ", "");
+                        else
+                            nline = "PrimeHack/Visor 3 = " + line.Replace("index_2 = ", "");
+
+                        primesettings += Regex.Replace(nline, "\b&\b", " & ") + "\n";
+
+                        continue;
+                    }
+
+                    if (line.StartsWith("index_3"))
+                    {
+                        if (beam)
+                            nline = "PrimeHack/Beam 4 = " + line.Replace("index_3 = ", "");
+                        else
+                            nline = "PrimeHack/Visor 4 = " + line.Replace("index_3 = ", "");
+
+                        primesettings += Regex.Replace(nline, "\b&\b", " & ") + "\n";
+
+                        continue;
+                    }
                 }
-            }           
+
+                String config = DE + "\\Config\\WiimoteNew.ini";
+                if (!File.Exists(config))
+                {
+                    FileStream f = File.Create(config);
+                    f.Close();
+
+                    primesettings = "[Wiimote1]\n" + primesettings;
+
+                    File.WriteAllLines(config, primesettings.Split('\n'));
+                }
+                else
+                {
+                    string[] oldwiimotenew = File.ReadAllLines(config);
+                    List<string> newwiimote = new List<string>();
+
+                    newwiimote.AddRange(oldwiimotenew);
+                    newwiimote.Insert(2, primesettings.Substring(0, primesettings.Length - 1));
+
+                    File.WriteAllLines(config, newwiimote.ToArray());
+                }
+
+                File.Delete(".\\hack_config.ini");
+            }                   
         }
 
         public static void runPrimeHack(string[] args)
