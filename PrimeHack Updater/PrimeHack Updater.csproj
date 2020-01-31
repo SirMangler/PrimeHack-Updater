@@ -116,6 +116,9 @@
     <Compile Include="Source\WinForms\ISOSelectionDialog.designer.cs">
       <DependentUpon>ISOSelectionDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Source\TimedWebClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

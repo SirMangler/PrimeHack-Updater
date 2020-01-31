@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace InternalUpdater
@@ -58,9 +52,10 @@ namespace InternalUpdater
                 | SecurityProtocolType.Ssl3;
 
             Console.WriteLine("Downloading: " + url);
-            using (var client = new WebClient())
+            using (var client = new TimedWebClient())
             {
                 Console.WriteLine("Downloading to: "+extractpath);
+                client.Proxy = null;
                 client.DownloadFile(url, extractpath);
             }
 

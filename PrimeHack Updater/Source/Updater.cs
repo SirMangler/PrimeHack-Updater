@@ -3,7 +3,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
-using System.Net;
 using System.Linq;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -43,8 +42,7 @@ namespace PrimeHack_Updater
             migrate();
 
             string repo;
-            if (cfg.isMainBranch())
-                repo = @"https://api.github.com/repos/shiiion/dolphin/releases/latest";
+            if (cfg.isMainBranch()) repo = @"https://api.github.com/repos/shiiion/dolphin/releases/latest";
             else repo = @"https://api.github.com/repos/shiiion/Ishiiruka/releases/latest";
 
             html = VersionCheck.getJSONInfo(repo);
@@ -345,7 +343,6 @@ namespace PrimeHack_Updater
 
             p.Start();
 
-            //Console.ReadKey();
             System.Environment.Exit(1);
         }
 
@@ -373,8 +370,9 @@ namespace PrimeHack_Updater
         public static void downloadLatest(string url)
         {
             Console.WriteLine("New Update!\nDownloading: " + url);
-            using (var client = new WebClient())
+            using (var client = new TimedWebClient())
             {
+                client.Proxy = null;
                 client.DownloadFile(url, Path.GetTempPath() + "\\PrimeHackRelease.zip");
             }
 
