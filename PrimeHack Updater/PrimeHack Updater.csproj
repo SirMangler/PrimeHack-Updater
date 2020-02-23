@@ -98,6 +98,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\Resources.Designer.cs">
@@ -110,11 +111,11 @@
     <Compile Include="Source\InternalUpdater.cs" />
     <Compile Include="Source\Updater.cs" />
     <Compile Include="Source\VersionCheck.cs" />
-    <Compile Include="Source\WinForms\ISOSelectionDialog.cs">
+    <Compile Include="Source\WinForms\UpdateUI.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Source\WinForms\ISOSelectionDialog.designer.cs">
-      <DependentUpon>ISOSelectionDialog.cs</DependentUpon>
+    <Compile Include="Source\WinForms\UpdateUI.Designer.cs">
+      <DependentUpon>UpdateUI.cs</DependentUpon>
     </Compile>
     <Compile Include="Source\TimedWebClient.cs">
       <SubType>Component</SubType>
@@ -128,6 +129,7 @@
     <None Include="Properties\app.manifest">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Resources\Deface_Regular_v1.ttf" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="metroid_prime.ico" />
@@ -138,8 +140,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\WinForms\ISOSelectionDialog.resx">
-      <DependentUpon>ISOSelectionDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Source\WinForms\UpdateUI.resx">
+      <DependentUpon>UpdateUI.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

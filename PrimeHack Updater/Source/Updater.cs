@@ -12,34 +12,36 @@ using System.Security.Principal;
 using System.Reflection;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using PrimeHack_Updater.Source.WinForms;
 
 namespace PrimeHack_Updater
 {
     class Updater
     {
-        static string sysversion = "1.5.6";
-        static CfgManager cfg = new CfgManager();
+        public static string sysversion = "1.6.0";
 
-        [DllImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool AllocConsole();
+        public static readonly CfgManager cfg = new CfgManager();
+        public static UpdateUI ui;
+        static string[] arguments;
 
         [STAThread]
         static void Main(string[] args)
         {
+            arguments = args;
+
             string html = VersionCheck.getJSONInfo(@"https://api.github.com/repos/SirMangler/PrimeHack-Updater/releases/latest");
             string remoteversion = VersionCheck.getVersion(html);
 
+            #if (!DEBUG)
             if (!remoteversion.Equals(sysversion))
             {
-                DialogResult dialogResult = MessageBox.Show("PrimeHack Updater has a new update. Do you want it to update itself?", "PrimeHack Updater", MessageBoxButtons.YesNo);
+                DialogResult dialogResult = MessageBox.Show("PrimeHack Updater has a new update. Do you want it to update itself?", "PrimeHack Updater", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (dialogResult == DialogResult.Yes)
                 {
                     InternalUpdater.update();
                 }
             }
-
-            migrate();
+            #endif
 
             string repo;
             if (cfg.isMainBranch()) repo = @"https://api.github.com/repos/shiiion/dolphin/releases/latest";
@@ -50,41 +52,107 @@ namespace PrimeHack_Updater
 
             if (cfg.isVersionsEqual(remoteversion))
             {
-                runPrimeHack(args);
+                if (cfg.getISOPath().Equals(""))
+                {
+                    Application.Run(ui = new UpdateUI());
+                }
+                else runPrimeHack(cfg.getISOPath());
             }
             else
             {
-                AllocConsole();
+                if (!WriteAccess(".\\"))
+                    restartAsAdmin();
 
-                while (true)
+                dynamic j = JObject.Parse(html);
+                JArray ja = j.assets;
+                dynamic assets = ja[0];
+                string url = assets.browser_download_url;
+
+                sysversion = remoteversion;
+
+                Application.Run(ui = new UpdateUI(url));
+            }
+        }
+
+        public static void Update(string url)
+        {
+            migrate(ui);
+
+            while (true)
+            {
+                Process[] runningProcesses = Process.GetProcessesByName("Dolphin");
+                if (runningProcesses.Length != 0)
                 {
-                    Process[] runningProcesses = Process.GetProcessesByName("Dolphin");
-                    if (runningProcesses.Length != 0)
-                    {
-                        Console.WriteLine("Dolphin is already running. Please close Dolphin to continue updating. Hit any key to continue.");
-                        Console.ReadKey();
-                    }
-                    else
-                    {
-                        break;
-                    }
+                    MessageBox.Show("Dolphin is currently running. Please close Dolphin to continue updating.", "PrimeHack Updater", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    break;
                 }
             }
 
-            if (!WriteAccess(".\\"))
-                restartAsAdmin();
+            DownloadLatest(url);
+        }
 
-            dynamic j = JObject.Parse(html);
-            JArray ja = j.assets;
-            dynamic assets = ja[0];
-            string url = assets.browser_download_url;
 
-            downloadLatest(url);
+        public static void DownloadLatest(string url)
+        {
+            ui.writeLine("New Update!\r\n\r\nDownloading: " + url);
 
-            cfg.setVersion(remoteversion);
+            Uri uri;
+            Uri.TryCreate(url, UriKind.Absolute, out uri);
 
-            Console.WriteLine("Updated successfully.");
-            runPrimeHack(args);
+            using (var client = new TimedWebClient())
+            {
+                client.Proxy = null;
+                client.DownloadFileAsync(uri, Path.GetTempPath() + "\\PrimeHackRelease.zip");
+                client.DownloadProgressChanged += ui.UpdateProgress;
+                client.DownloadFileCompleted += InstallPrimeHack;
+            }
+        }
+
+        public static void InstallPrimeHack(object sender, AsyncCompletedEventArgs e)
+        {
+            ui.writeLine("Extracting PrimeHackRelease.zip");
+
+            ZipArchive archive = ZipFile.OpenRead(Path.GetTempPath() + "\\PrimeHackRelease.zip");
+
+            foreach (ZipArchiveEntry file in archive.Entries)
+            {
+                string completeFileName = Path.Combine(".\\", file.FullName);
+                string directory = Path.GetDirectoryName(completeFileName);
+
+                if (!Directory.Exists(directory))
+                    Directory.CreateDirectory(directory);
+
+                if (File.Exists(completeFileName))
+                {
+                    if (completeFileName.EndsWith("hack_config.ini"))
+                        continue;
+
+                    long ziptime = file.LastWriteTime.ToFileTime();
+                    long oldtime = File.GetLastWriteTime(completeFileName).ToFileTime();
+
+                    if (ziptime == oldtime)
+                        continue;
+                }
+
+                if (file.Name != "")
+                {
+                    //ui.writeLine("Transferring: " + completeFileName);
+                    file.ExtractToFile(completeFileName, true);
+                }
+            }
+
+            archive.Dispose();
+
+            ui.writeLine("Deleting PrimeHackRelease.zip");
+            File.Delete(Path.GetTempPath() + "\\PrimeHackRelease.zip");
+
+            cfg.setVersion(sysversion);
+            ui.writeLine("Successfully updated to version: " + sysversion);
+
+            ui.FinishedInstalling();
         }
 
         public static void restartAsAdmin()
@@ -102,102 +170,24 @@ namespace PrimeHack_Updater
                 {
                     Process.Start(processInfo);
                 }
-                catch (Win32Exception)
+                catch (Win32Exception e) 
                 {
-                    
+                    MessageBox.Show("Failed to restart with administrator.\nError: " + e.Message, "PrimeHack Updater", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
                 System.Environment.Exit(1);
             }
         }
 
-        static string quickpath = null;
-        public static void isoSelection()
-        {
-            string path = cfg.getISOPath();
-
-            if (path.Equals("NEVER")) return;
-
-            if (path.Equals(""))
-            {
-                path = getSelectionResult();
-            } else
-            {
-                if (!File.Exists(path))
-                {
-                    MessageBox.Show("Cannot find file: " + path);
-
-                    path = getSelectionResult();
-                }
-            }
-
-            quickpath = path;
-
-            cfg.setISOPath(quickpath);
-        }
-
-        public static string getSelectionResult()
-        {
-            string path = "";
-
-            using (var dialog = new ISOSelectionDialog())
-            {
-                var result = dialog.ShowDialog();
-
-                if (result == System.Windows.Forms.DialogResult.OK)
-                {
-                    OpenFileDialog filedialog = new OpenFileDialog();
-                    filedialog.Filter = "All GC/Wii files|*.elf;*.dol;*.gcm;*.tgc;*.iso;*.wbfs;*.ciso;*.gcz;*.wad;*.dff";
-                    filedialog.FilterIndex = 1;
-
-                    if (STAShowDialog(filedialog) == DialogResult.OK)
-                    {
-                        path = filedialog.FileName;
-                    }
-                    else
-                    {
-                        isoSelection();
-                    }
-                }
-                else if (result == DialogResult.No)
-                {
-                    path = "NEVER";
-                }
-                else
-                {
-                    path = "";
-                }
-            }
-
-            return path;
-        }
-
-        public static DialogResult STAShowDialog(FileDialog dialog)
-        {
-            DialogState state = new DialogState();
-
-            state.dialog = dialog;
-
-            System.Threading.Thread t = new System.Threading.Thread(state.ThreadProcShowDialog);
-
-            t.SetApartmentState(System.Threading.ApartmentState.STA);
-
-            t.Start();
-
-            t.Join();
-
-            return state.result;
-        }
-
         static string DE = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\Dolphin Emulator\");
-        public static void migrate()
+        public static void migrate(UpdateUI ui)
         {
             string primesettings = "";
             bool beam = false;
 
             if (File.Exists("hack_config.ini"))
             {
-                Console.WriteLine("Importing PrimeHack settings");
+                ui.writeLine("Importing PrimeHack settings");
                 foreach (string line in File.ReadLines("hack_config.ini"))
                 {
                     if (line.StartsWith("[beam]"))
@@ -236,7 +226,7 @@ namespace PrimeHack_Updater
                         continue;
                     }
 
-                    String nline;
+                    string nline;
 
                     if (line.StartsWith("index_0"))
                     {
@@ -287,7 +277,7 @@ namespace PrimeHack_Updater
                     }
                 }
 
-                String config = DE + "\\Config\\WiimoteNew.ini";
+                string config = DE + "\\Config\\WiimoteNew.ini";
                 if (!File.Exists(config))
                 {
                     FileStream f = File.Create(config);
@@ -312,27 +302,24 @@ namespace PrimeHack_Updater
             }                   
         }
 
-        public static void runPrimeHack(string[] args)
+        public static void runPrimeHack(string path)
         {
-            Console.WriteLine("ISO Selection");
-            isoSelection();
-
             Process p = new Process();
             p.StartInfo.FileName = ".\\Dolphin.exe";
             p.StartInfo.UseShellExecute = true;
 
-            if (quickpath != null)
+            if (path != null)
             {
-                if (!quickpath.Equals("") && !quickpath.Equals("NEVER"))
+                if (!path.Equals("") && !path.Equals("NEVER"))
                 {
-                    p.StartInfo.Arguments = "-e \"" + quickpath + "\"";
+                    p.StartInfo.Arguments = "-e \"" + path + "\"";
                 } else
                 {
-                    p.StartInfo.Arguments = string.Join(" ", args);
+                    p.StartInfo.Arguments = string.Join(" ", arguments);
                 }
             } else
             {
-                p.StartInfo.Arguments = string.Join(" ", args);
+                p.StartInfo.Arguments = string.Join(" ", arguments);
             }
 
             if (!cfg.isMainBranch())
@@ -365,62 +352,6 @@ namespace PrimeHack_Updater
 
             // Check if writing is allowed
             return rules.OfType<FileSystemAccessRule>().Any(r => (groups.Contains(r.IdentityReference) || r.IdentityReference.Value == sidCurrentUser) && r.AccessControlType == AccessControlType.Allow && (r.FileSystemRights & FileSystemRights.WriteData) == FileSystemRights.WriteData);
-        }
-
-        public static void downloadLatest(string url)
-        {
-            Console.WriteLine("New Update!\nDownloading: " + url);
-            using (var client = new TimedWebClient())
-            {
-                client.Proxy = null;
-                client.DownloadFile(url, Path.GetTempPath() + "\\PrimeHackRelease.zip");
-            }
-
-            Console.WriteLine("Extracting PrimeHackRelease.zip");
-
-            ZipArchive archive = ZipFile.OpenRead(Path.GetTempPath() + "\\PrimeHackRelease.zip");
-
-            foreach (ZipArchiveEntry file in archive.Entries)
-            {
-                string completeFileName = Path.Combine(".\\", file.FullName);
-                string directory = Path.GetDirectoryName(completeFileName);
-
-                if (!Directory.Exists(directory))
-                    Directory.CreateDirectory(directory);
-
-                if (File.Exists(completeFileName))
-                {
-                    if (completeFileName.EndsWith("hack_config.ini"))
-                        continue;
-
-                    long ziptime = file.LastWriteTime.ToFileTime();
-                    long oldtime = File.GetLastWriteTime(completeFileName).ToFileTime();
-
-                    if (ziptime == oldtime)
-                        continue;                
-                }
-
-                if (file.Name != "") {
-                    //Console.WriteLine("Transferring: " + completeFileName);
-                    file.ExtractToFile(completeFileName, true);
-                }
-            }
-
-            archive.Dispose();
-
-            Console.WriteLine("Deleting PrimeHackRelease.zip");
-            File.Delete(Path.GetTempPath() + "\\PrimeHackRelease.zip");
-        }
-
-        public class DialogState
-        {
-            public DialogResult result;
-            public FileDialog dialog;
-
-            public void ThreadProcShowDialog()
-            {
-                result = dialog.ShowDialog();
-            }
         }
     }
 }

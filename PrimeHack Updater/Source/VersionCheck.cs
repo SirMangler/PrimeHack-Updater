@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace PrimeHack_Updater
 {
@@ -15,9 +16,7 @@ namespace PrimeHack_Updater
         {
             if (html == null || html.Length == 0)
             {
-                Console.WriteLine("Couldn't access JSON info. Press any key to launch.");
-                Console.ReadKey();
-
+                VersionCheckError();
                 return "-1";
             }
 
@@ -51,10 +50,29 @@ namespace PrimeHack_Updater
             }
             catch (Exception e)
             {
-                Console.WriteLine("Failed to retrieve version info: " + e.Message);
+                Updater.ui.writeLine("Failed to retrieve version info: " + e.Message);
+                VersionCheckError();
             }
 
             return html;
+        }
+
+        public static void VersionCheckError()
+        {
+            DialogResult result = MessageBox.Show("Failed to download the metadata for the latest version. Try again?", "PrimeHack Updater", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation);
+
+            if (result == DialogResult.Yes)
+            {
+                Updater.restartAsAdmin();
+            }
+            else if (result == DialogResult.No)
+            {
+                Updater.runPrimeHack("");
+            }
+            else if (result == DialogResult.Cancel)
+            {
+                Environment.Exit(0);
+            }
         }
     }
 }
