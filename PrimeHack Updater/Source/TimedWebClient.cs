@@ -12,7 +12,7 @@ namespace PrimeHack_Updater
         protected override WebRequest GetWebRequest(Uri address)
         {
             WebRequest w = base.GetWebRequest(address);
-            w.Timeout = 5000;
+            w.Timeout = 3000;
             return w;
         }
     }

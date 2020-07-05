@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Drawing.Text;
-using System.Linq;
+using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Threading;
 
 namespace PrimeHack_Updater.Source.WinForms
 {
@@ -72,6 +66,7 @@ namespace PrimeHack_Updater.Source.WinForms
         private void browse_button_Click(object sender, EventArgs e)
         {
             OpenFileDialog filedialog = new OpenFileDialog();
+            filedialog.Title = "Select your Metroid Prime: Trilogy dump";
             filedialog.Filter = "All GC/Wii files|*.elf;*.dol;*.gcm;*.tgc;*.iso;*.wbfs;*.ciso;*.gcz;*.wad;*.dff";
             filedialog.FilterIndex = 1;
 
@@ -91,7 +86,7 @@ namespace PrimeHack_Updater.Source.WinForms
 
         public void FinishedInstalling()
         {
-            if (Updater.cfg.getISOPath().Equals(""))
+            if (!Updater.IsPathValid(Updater.cfg.getISOPath()))
                 BeginInvoke((Action)(() => ISOSelection()));
             else Updater.runPrimeHack(Updater.cfg.getISOPath());
         }

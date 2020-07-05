@@ -72,7 +72,7 @@
             this.console.BackColor = System.Drawing.Color.Black;
             this.console.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.console.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.console.Font = new System.Drawing.Font("SansSerif", 9.749999F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
+            //this.console.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.console.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(214)))), ((int)(((byte)(255)))));
             this.console.Location = new System.Drawing.Point(0, 0);
             this.console.Multiline = true;

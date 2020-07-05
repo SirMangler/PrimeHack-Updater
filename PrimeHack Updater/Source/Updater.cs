@@ -29,6 +29,8 @@ namespace PrimeHack_Updater
         {
             arguments = args;
 
+            Application.SetCompatibleTextRenderingDefault(false);
+
             string html = VersionCheck.getJSONInfo(@"https://api.github.com/repos/SirMangler/PrimeHack-Updater/releases/latest");
             string remoteversion = VersionCheck.getVersion(html);
 
@@ -52,7 +54,7 @@ namespace PrimeHack_Updater
 
             if (cfg.isVersionsEqual(remoteversion))
             {
-                if (cfg.getISOPath().Equals(""))
+                if (!IsPathValid(cfg.getISOPath()))
                 {
                     Application.Run(ui = new UpdateUI());
                 }
@@ -331,6 +333,17 @@ namespace PrimeHack_Updater
             p.Start();
 
             System.Environment.Exit(1);
+        }
+
+        public static bool IsPathValid(string path)
+        {
+            if (path.Equals(""))
+                return false;
+
+            if (!File.Exists(path))
+                return false;
+
+            return true;
         }
 
         //Modified version of https://stackoverflow.com/a/3769421
