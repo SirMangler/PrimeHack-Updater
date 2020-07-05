@@ -40,6 +40,8 @@ namespace PrimeHack_Updater.Source.WinForms
         {
             writeLine("ISO selector");
 
+            immersiveMode.Checked = Updater.cfg.getImmersiveMode();
+
             UpdatePanel.Hide();
             SelectionPanel.Show();
 
@@ -74,6 +76,11 @@ namespace PrimeHack_Updater.Source.WinForms
             {
                 path_box.Text = filedialog.FileName;
             }
+        }
+
+        private void ImmersiveChecked(object sender, EventArgs e)
+        {
+            Updater.cfg.setImmersiveMode(immersiveMode.Checked);
         }
 
         public void UpdateProgress(object sender, DownloadProgressChangedEventArgs e)

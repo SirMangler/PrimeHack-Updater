@@ -40,6 +40,7 @@
             this.Never = new System.Windows.Forms.Button();
             this.Later = new System.Windows.Forms.Button();
             this.Yes = new System.Windows.Forms.Button();
+            this.immersiveMode = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.UpdatePanel)).BeginInit();
             this.UpdatePanel.Panel1.SuspendLayout();
             this.UpdatePanel.Panel2.SuspendLayout();
@@ -72,7 +73,6 @@
             this.console.BackColor = System.Drawing.Color.Black;
             this.console.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.console.Dock = System.Windows.Forms.DockStyle.Fill;
-            //this.console.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.console.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(214)))), ((int)(((byte)(255)))));
             this.console.Location = new System.Drawing.Point(0, 0);
             this.console.Multiline = true;
@@ -107,14 +107,15 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.immersiveMode);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.browse_button);
             this.groupBox1.Controls.Add(this.path_box);
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(214)))), ((int)(((byte)(255)))));
-            this.groupBox1.Location = new System.Drawing.Point(13, 11);
+            this.groupBox1.Location = new System.Drawing.Point(13, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(435, 93);
+            this.groupBox1.Size = new System.Drawing.Size(435, 105);
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "QuickLaunch (Optional)";
@@ -122,11 +123,10 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font(fonts.Families[0], 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(102)))), ((int)(((byte)(0)))));
-            this.label1.Location = new System.Drawing.Point(12, 16);
+            this.label1.Location = new System.Drawing.Point(12, 17);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(405, 30);
+            this.label1.Size = new System.Drawing.Size(340, 26);
             this.label1.TabIndex = 6;
             this.label1.Text = "Do you want the PrimeHack Updater to automatically boot \r\ninto Metroid Prime: Tri" +
     "logy?";
@@ -135,7 +135,7 @@
             // 
             this.browse_button.BackColor = System.Drawing.Color.DimGray;
             this.browse_button.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(214)))), ((int)(((byte)(255)))));
-            this.browse_button.Location = new System.Drawing.Point(334, 60);
+            this.browse_button.Location = new System.Drawing.Point(334, 51);
             this.browse_button.Name = "browse_button";
             this.browse_button.Size = new System.Drawing.Size(87, 24);
             this.browse_button.TabIndex = 4;
@@ -147,7 +147,7 @@
             // 
             this.path_box.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(102)))), ((int)(((byte)(0)))));
             this.path_box.Font = new System.Drawing.Font("SansSerif", 9.749999F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-            this.path_box.Location = new System.Drawing.Point(14, 60);
+            this.path_box.Location = new System.Drawing.Point(14, 51);
             this.path_box.Name = "path_box";
             this.path_box.ReadOnly = true;
             this.path_box.Size = new System.Drawing.Size(314, 23);
@@ -156,9 +156,8 @@
             // Never
             // 
             this.Never.BackColor = System.Drawing.Color.DimGray;
-            this.Never.Font = new System.Drawing.Font(fonts.Families[0], 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Never.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(214)))), ((int)(((byte)(255)))));
-            this.Never.Location = new System.Drawing.Point(169, 111);
+            this.Never.Location = new System.Drawing.Point(169, 114);
             this.Never.Name = "Never";
             this.Never.Size = new System.Drawing.Size(121, 27);
             this.Never.TabIndex = 8;
@@ -169,9 +168,8 @@
             // Later
             // 
             this.Later.BackColor = System.Drawing.Color.DimGray;
-            this.Later.Font = new System.Drawing.Font(fonts.Families[0], 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Later.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(214)))), ((int)(((byte)(255)))));
-            this.Later.Location = new System.Drawing.Point(327, 111);
+            this.Later.Location = new System.Drawing.Point(327, 114);
             this.Later.Name = "Later";
             this.Later.Size = new System.Drawing.Size(121, 27);
             this.Later.TabIndex = 7;
@@ -182,15 +180,25 @@
             // Yes
             // 
             this.Yes.BackColor = System.Drawing.Color.DimGray;
-            this.Yes.Font = new System.Drawing.Font(fonts.Families[0], 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Yes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(214)))), ((int)(((byte)(255)))));
-            this.Yes.Location = new System.Drawing.Point(13, 111);
+            this.Yes.Location = new System.Drawing.Point(13, 114);
             this.Yes.Name = "Yes";
             this.Yes.Size = new System.Drawing.Size(121, 27);
             this.Yes.TabIndex = 6;
             this.Yes.Text = "Yes";
             this.Yes.UseVisualStyleBackColor = false;
             this.Yes.Click += new System.EventHandler(this.Yes_Click);
+            // 
+            // immersiveMode
+            // 
+            this.immersiveMode.AutoSize = true;
+            this.immersiveMode.Location = new System.Drawing.Point(14, 80);
+            this.immersiveMode.Name = "immersiveMode";
+            this.immersiveMode.Size = new System.Drawing.Size(288, 17);
+            this.immersiveMode.TabIndex = 7;
+            this.immersiveMode.Text = "Run Game Immersively (Hide Dolphin Window)";
+            this.immersiveMode.UseVisualStyleBackColor = true;
+            this.immersiveMode.CheckedChanged += new System.EventHandler(this.ImmersiveChecked);
             // 
             // UpdateUI
             // 
@@ -230,5 +238,6 @@
         private System.Windows.Forms.Button Never;
         private System.Windows.Forms.Button Later;
         private System.Windows.Forms.Button Yes;
+        private System.Windows.Forms.CheckBox immersiveMode;
     }
 }

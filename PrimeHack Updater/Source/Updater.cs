@@ -315,6 +315,9 @@ namespace PrimeHack_Updater
                 if (!path.Equals("") && !path.Equals("NEVER"))
                 {
                     p.StartInfo.Arguments = "-e \"" + path + "\"";
+
+                    if (cfg.getImmersiveMode())
+                        p.StartInfo.Arguments += " -b";
                 } else
                 {
                     p.StartInfo.Arguments = string.Join(" ", arguments);

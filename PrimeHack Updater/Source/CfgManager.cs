@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PrimeHack_Updater
 {
@@ -12,7 +8,8 @@ namespace PrimeHack_Updater
         string version = "";
         string isopath = "";
         bool mainbranch = true;
-
+        bool immersive_mode = false;
+         
         public CfgManager()
         {
             loadCfg();
@@ -41,6 +38,12 @@ namespace PrimeHack_Updater
                         Boolean.TryParse(line.Replace("mainbranch=", ""), out mainbranch);
                         continue;
                     }
+
+                    if (line.StartsWith("immersive_mode="))
+                    {
+                        Boolean.TryParse(line.Replace("immersive_mode=", ""), out immersive_mode);
+                        continue;
+                    }
                 }
             } else
             {
@@ -57,6 +60,14 @@ namespace PrimeHack_Updater
                 loadCfg();
 
             return isopath;
+        }
+
+        public bool getImmersiveMode()
+        {
+            if (!File.Exists("./updater.cfg"))
+                loadCfg();
+
+            return immersive_mode;
         }
 
         public string getVersion()
@@ -83,10 +94,11 @@ namespace PrimeHack_Updater
             if (!File.Exists("./updater.cfg"))
                 loadCfg();
 
-            string[] lines = new string[3];
+            string[] lines = new string[4];
             lines[0] = "version="+version;
             lines[1] = "isopath=" + isopath;
             lines[2] = "mainbranch=" + mainbranch;
+            lines[3] = "immersive_mode=" + immersive_mode;
 
             File.WriteAllLines("./updater.cfg", lines);
 
@@ -103,6 +115,12 @@ namespace PrimeHack_Updater
         public void setISOPath(string path)
         {
             isopath = path;
+            saveCfg();
+        }
+
+        public void setImmersiveMode(bool mode)
+        {
+            immersive_mode = mode;
             saveCfg();
         }
 
