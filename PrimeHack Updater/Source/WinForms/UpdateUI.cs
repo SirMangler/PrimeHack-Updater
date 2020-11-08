@@ -69,7 +69,7 @@ namespace PrimeHack_Updater.Source.WinForms
         {
             OpenFileDialog filedialog = new OpenFileDialog();
             filedialog.Title = "Select your Metroid Prime: Trilogy dump";
-            filedialog.Filter = "All GC/Wii files|*.elf;*.dol;*.gcm;*.tgc;*.iso;*.wbfs;*.ciso;*.gcz;*.wad;*.dff";
+            filedialog.Filter = "All GC/Wii files|*.elf;*.dol;*.gcm;*.tgc;*.iso;*.wbfs;*.ciso;*.gcz;*.wad;*.dff;*.wia;*.rvz";
             filedialog.FilterIndex = 1;
 
             if (STAShowDialog(filedialog) == DialogResult.OK)
