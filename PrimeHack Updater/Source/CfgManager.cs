@@ -9,7 +9,7 @@ namespace PrimeHack_Updater
         string isopath = "";
         bool mainbranch = true;
         bool immersive_mode = false;
-         
+
         public CfgManager()
         {
             loadCfg();

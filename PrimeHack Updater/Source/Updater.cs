@@ -11,23 +11,23 @@ using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Reflection;
 using System.ComponentModel;
-using System.Runtime.InteropServices;
 using PrimeHack_Updater.Source.WinForms;
 
 namespace PrimeHack_Updater
 {
     class Updater
     {
-        public static string sysversion = "1.6.0";
+        public static string sysversion = "1.7.0";
 
         public static readonly CfgManager cfg = new CfgManager();
         public static UpdateUI ui;
-        static string[] arguments;
+        static string[] arguments = new string[0];
 
         [STAThread]
         static void Main(string[] args)
         {
-            arguments = args;
+            if (args.Length != 0)
+                arguments = args;
 
             Application.SetCompatibleTextRenderingDefault(false);
 
@@ -37,10 +37,15 @@ namespace PrimeHack_Updater
             #if (!DEBUG)
             if (!remoteversion.Equals(sysversion))
             {
-                DialogResult dialogResult = MessageBox.Show("PrimeHack Updater has a new update. Do you want it to update itself?", "PrimeHack Updater", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                DialogResult dialogResult = MessageBox.Show("PrimeHack Updater has a new update. "
+                        + "It is recommended you update as this may contain crucial bug fixes or migration tools for new PrimeHack versions.\n"
+                        + "\nhttps://github.com/SirMangler/PrimeHack-Updater/releases"
+                        + "\n\nOpen this link now?", "PrimeHack Updater", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
                 if (dialogResult == DialogResult.Yes)
                 {
-                    InternalUpdater.update();
+                    Process.Start("https://github.com/SirMangler/PrimeHack-Updater/releases");
+                    System.Environment.Exit(0);
                 }
             }
             #endif
@@ -96,7 +101,6 @@ namespace PrimeHack_Updater
             DownloadLatest(url);
         }
 
-
         public static void DownloadLatest(string url)
         {
             ui.writeLine("New Update!\r\n\r\nDownloading: " + url);
@@ -141,7 +145,6 @@ namespace PrimeHack_Updater
 
                 if (file.Name != "")
                 {
-                    //ui.writeLine("Transferring: " + completeFileName);
                     file.ExtractToFile(completeFileName, true);
                 }
             }
@@ -172,12 +175,12 @@ namespace PrimeHack_Updater
                 {
                     Process.Start(processInfo);
                 }
-                catch (Win32Exception e) 
+                catch (Win32Exception e)
                 {
                     MessageBox.Show("Failed to restart with administrator.\nError: " + e.Message, "PrimeHack Updater", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
-                System.Environment.Exit(1);
+                System.Environment.Exit(0);
             }
         }
 
@@ -301,28 +304,31 @@ namespace PrimeHack_Updater
                 }
 
                 File.Delete(".\\hack_config.ini");
-            }                   
+            }
         }
 
         public static void runPrimeHack(string path)
         {
+            if (!File.Exists(".\\Dolphin.exe")) { 
+                MessageBox.Show("Unable to locate Dolphin.exe!\n\nRemove updater.cfg and try again.", 
+                                                      "PrimeHack Updater", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                System.Environment.Exit(0);
+            }
+
             Process p = new Process();
             p.StartInfo.FileName = ".\\Dolphin.exe";
             p.StartInfo.UseShellExecute = true;
 
-            if (path != null)
-            {
-                if (!path.Equals("") && !path.Equals("NEVER"))
-                {
-                    p.StartInfo.Arguments = "-e \"" + path + "\"";
 
-                    if (cfg.getImmersiveMode())
-                        p.StartInfo.Arguments += " -b";
-                } else
-                {
-                    p.StartInfo.Arguments = string.Join(" ", arguments);
-                }
-            } else
+            if (path != null && !path.Equals("") && !path.Equals("NEVER"))
+            {
+                p.StartInfo.Arguments = "-e \"" + path + "\"";
+
+                if (cfg.getImmersiveMode())
+                    p.StartInfo.Arguments += " -b";
+            }
+            else
             {
                 p.StartInfo.Arguments = string.Join(" ", arguments);
             }
@@ -335,7 +341,7 @@ namespace PrimeHack_Updater
 
             p.Start();
 
-            System.Environment.Exit(1);
+            System.Environment.Exit(0);
         }
 
         public static bool IsPathValid(string path)

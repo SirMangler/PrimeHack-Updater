@@ -41,6 +41,7 @@ namespace PrimeHack_Updater.Source.WinForms
             writeLine("ISO selector");
 
             immersiveMode.Checked = Updater.cfg.getImmersiveMode();
+            portableMode.Checked = File.Exists("./portable.txt");
 
             UpdatePanel.Hide();
             SelectionPanel.Show();
@@ -81,6 +82,14 @@ namespace PrimeHack_Updater.Source.WinForms
         private void ImmersiveChecked(object sender, EventArgs e)
         {
             Updater.cfg.setImmersiveMode(immersiveMode.Checked);
+        }
+
+        private void PortableChecked(object sender, EventArgs e)
+        {      
+            if (portableMode.Checked && !File.Exists("./portable.txt"))
+              File.Create("./portable.txt").Close();
+            else if (!portableMode.Checked && File.Exists("./portable.txt")) 
+              File.Delete("./portable.txt");
         }
 
         public void UpdateProgress(object sender, DownloadProgressChangedEventArgs e)
@@ -173,5 +182,5 @@ namespace PrimeHack_Updater.Source.WinForms
             AddFontMemResourceEx(fontPtr, (uint)Properties.Resources.Deface_Regular_v1.Length, IntPtr.Zero, ref dummy);
             System.Runtime.InteropServices.Marshal.FreeCoTaskMem(fontPtr);
         }
-    }
+  }
 }

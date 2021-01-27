@@ -108,7 +108,6 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\CfgManager.cs" />
-    <Compile Include="Source\InternalUpdater.cs" />
     <Compile Include="Source\Updater.cs" />
     <Compile Include="Source\VersionCheck.cs" />
     <Compile Include="Source\WinForms\UpdateUI.cs">
@@ -133,12 +132,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="metroid_prime.ico" />
-    <Content Include="Resources\InternalUpdater.exe" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Source\WinForms\UpdateUI.resx">
       <DependentUpon>UpdateUI.cs</DependentUpon>

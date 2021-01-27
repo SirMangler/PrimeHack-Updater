@@ -69,15 +69,5 @@ namespace PrimeHack_Updater.Properties {
                 return ((byte[])(obj));
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] InternalUpdater {
-            get {
-                object obj = ResourceManager.GetObject("InternalUpdater", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
     }
 }
