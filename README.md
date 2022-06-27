@@ -3,7 +3,7 @@ An Updater/Installer for the [latest PrimeHack versions by Shiiion](https://gith
 
 
 Quick Start/Instructional Video:
-https://www.youtube.com/watch?v=z-TLzIwB-1k
+https://youtu.be/gwlSF1PfcGI
 
 PrimeHack Wiki (Additional Info & Tips):
 https://github.com/shiiion/dolphin/wiki
